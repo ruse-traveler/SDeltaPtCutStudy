@@ -1,0 +1,13 @@
+output/
+old/
+input/
+backup/
+src/*
+!src/SDeltaPtCutStudy.cc
+!src/SDeltaPtCutStudy.h
+!src/SDeltaPtCutStudy.io.h
+!src/SDeltaPtCutStudy.sys.h
+!src/SDeltaPtCutStudy.plot.h
+!src/autogen.sh
+!src/configure.ac
+!src/Makefile.am

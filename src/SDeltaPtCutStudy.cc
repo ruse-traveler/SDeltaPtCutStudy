@@ -41,7 +41,16 @@ SDeltaPtCutStudy::~SDeltaPtCutStudy() {
 
 void SDeltaPtCutStudy::Init() {
 
-  /* stuff will go here */
+  // announce initialization
+  cout << "    Initializing..." << endl;
+
+  // grab input
+  OpenFiles();
+  GetTuples();
+
+  // initialize input/output
+  InitTuples();
+  InitHists();
   return;
 
 }  // end Init()
@@ -59,7 +68,11 @@ void SDeltaPtCutStudy::Analyze() {
 
 void SDeltaPtCutStudy::End() {
 
-  /* stuff will go here */
+  // announce completion
+  cout << "    Finishing..." << endl;
+
+  SaveOutput();
+  CloseFiles();
   return ;
 
 }  // end End()
