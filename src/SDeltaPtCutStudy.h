@@ -22,12 +22,14 @@
 // root includes
 #include "TH1.h"
 #include "TH2.h"
+#include "TF1.h"
 #include "TPad.h"
 #include "TFile.h"
-#include "TMath.h"
+#include "TLine.h"
+#include "TGraph.h"
 #include "TError.h"
-#include "TNtuple.h"
 #include "TString.h"
+#include "TNtuple.h"
 #include "TLegend.h"
 #include "TCanvas.h"
 #include "TPaveText.h"
@@ -51,8 +53,8 @@ class SDeltaPtCutStudy {
     void End();
 
     // setters [*.io.h]
-    SetInputOutputFiles(const TString sInput, const TString sOutput);
-    SetInputTuples(const TString sTrack, const TString sTruth);
+    void SetInputOutputFiles(const TString sInput, const TString sOutput);
+    void SetInputTuples(const TString sTrack, const TString sTruth);
 
   private:
 
@@ -79,11 +81,19 @@ class SDeltaPtCutStudy {
     void InitTuples();
     void InitHists();
 
+    // analysis methods [*.ana.h]
+    void ApplyFlatDeltaPtCuts();
+    void ApplyPtDependentDeltaPtCuts();
+    void FillTruthHistograms();
+    void CreateSigmaGraphs();
+    void CalculateRejectionFactors();
+    void CalculateEfficiencies();
+
     // plot methods [*.plot.h]
     void SetStyles();
     void MakePlots();
 
-    // io members
+    // io parameters
     TFile*   fInput;
     TFile*   fOutput;
     TNtuple* ntTrack;
@@ -92,6 +102,59 @@ class SDeltaPtCutStudy {
     TString  sOutFile;
     TString  sInTrack;
     TString  sInTruth;
+
+    // cut parameters [FIXME these should be user configurable]
+    size_t nInttTrkMin                     = 1;
+    size_t nMVtxTrkMin                     = 2;
+    size_t nTpcTrkMin                      = 35;
+    double qualTrkMax                      = 10.;
+    double vzTrkMax                        = 10.;
+    double ptTrkMin                        = 0.1;
+    double ptDeltaMax[CONSTANTS::NDPtCuts] = {0.5, 0.25, 0.1, 0.05, 0.03, 0.02, 0.01};
+    double ptDeltaSig[CONSTANTS::NSigCuts] = {1.,  1.5,  2.,  2.5,  3.};
+    double normRange[CONSTANTS::NRange]    = {0.2, 1.2};
+
+    // plot parameters [FIXME these should be user configurable]
+    size_t iCutToDraw = CONSTANTS::NDPtCuts - 3;
+    size_t iSigToDraw = CONSTANTS::NSigCuts - 3;
+    size_t nEffRebin  = 5;
+    bool   doEffRebin = true;
+
+    // sigma calculation parameters [FIXME these should be user configurable]
+    double ptProj[CONSTANTS::NProj]         = {0.5, 1., 2., 5., 10., 20., 30., 40.};
+    double sigHiGuess[CONSTANTS::NPar]      = {1., -1., 1.};
+    double sigLoGuess[CONSTANTS::NPar]      = {1., -1., 1.};
+    double deltaFitRange[CONSTANTS::NRange] = {0.,  0.1};
+    double ptFitRange[CONSTANTS::NRange]    = {0.5, 40.};
+
+    // histogram parameters [FIXME these shoud be user configurable]
+    TString sPtProjBase("DeltaPtProj");
+    TString sProjSuffix[CONSTANTS::NProj] = {
+      "_pt05",
+      "_pt1",
+      "_pt2",
+      "_pt5",
+      "_pt10",
+      "_pt20",
+      "_pt30",
+      "_pt40"
+    }; 
+    TString sDPtSuffix[CONSTANTS::NDPtCuts] = {
+      "_dPt50",
+      "_dPt25",
+      "_dPt10",
+      "_dPt05",
+      "_dPt03",
+      "_dPt02",
+      "_dPt01"
+    };
+    TString sSigSuffix[CONSTANTS::NSigCuts] = {
+      "_sigDPt1",
+      "_sidDpt15",
+      "_sigDPt2",
+      "_sigDPt25",
+      "_sigDPt3"
+    };
 
     // track tuple addresses
     float trk_event;
@@ -291,6 +354,24 @@ class SDeltaPtCutStudy {
     float tru_nclusmaps;
     float tru_nclusmms;
 
+    // for sigma calculation
+    double muProj[CONSTANTS::NProj];
+    double sigProj[CONSTANTS::NProj];
+    double muHiProj[CONSTANTS::NSigCuts][CONSTANTS::NProj];
+    double muLoProj[CONSTANTS::NSigCuts][CONSTANTS::NProj];
+
+    // for reject calculation
+    uint64_t nNormCut[CONSTANTS::NDPtCuts];
+    uint64_t nNormSig[CONSTANTS::NSigCuts];
+    uint64_t nWeirdCut[CONSTANTS::NDPtCuts];
+    uint64_t nWeirdSig[CONSTANTS::NSigCuts];
+    double   rejCut[CONSTANTS::NDPtCuts];
+    double   rejSig[CONSTANTS::NSigCuts];
+
+    // for tuple loops
+    uint64_t nTrks;
+    uint64_t nTrus;
+
     // 1d histograms
     TH1D* hEff;
     TH1D* hPtTruth;
@@ -327,6 +408,7 @@ class SDeltaPtCutStudy {
     // functions
     TF1* fMuHiProj[CONSTANTS::NSigCuts];
     TF1* fMuLoProj[CONSTANTS::NSigCuts];
+    TF1 *fPtDeltaProj[CONSTANTS::NProj];
 
     // graphs
     TGraph* grMuProj;

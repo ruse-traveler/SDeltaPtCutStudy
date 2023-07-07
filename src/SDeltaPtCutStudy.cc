@@ -13,6 +13,9 @@
 
 // header files
 #include "SDeltaPtCutStudy.h"
+#include "SDeltaPtCutStudy.io.h"
+#include "SDeltaPtCutStudy.sys.h"
+#include "SDeltaPtCutStudy.plot.h"
 
 using namespace std;
 
@@ -22,7 +25,32 @@ using namespace std;
 
 SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
-  /* stuff will go here */
+  // initialize arrays for sigma calculation
+  // [FIXME this will need to go wherever NProj and NSigCuts will be set]
+  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+    muProj[iProj]  = 0.;
+    sigProj[iProj] = 0.;
+  }
+  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+    for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+      muHiProj[iSig][iProj] = 0.;
+      muLoProj[iSig][iProj] = 0.;
+    }
+  }
+
+  // initialize arrays for rejection calculation
+  // [FIXME this will need to go where NDPtCuts and NSigCuts will be set]
+  for (Ssiz_t iCut = 0; iCut < NDPtCuts; iCut++) {
+    nNormCut[iCut]  = 0;
+    nWeirdCut[iCut] = 0;
+    rejCut[iCut]    = 0.;
+  }
+  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+    nNormSig[iSig]  = 0;
+    nWeirdSig[iSig] = 0;
+    rejSig[iSig]    = 0.;
+  }
+  cout << "\n  Beginning delta-pt cut study..." << endl;
 
 }  // end ctor
 
@@ -59,7 +87,29 @@ void SDeltaPtCutStudy::Init() {
 
 void SDeltaPtCutStudy::Analyze() {
 
-  /* stuff will go here */
+  // announce analysis
+  cout << "    Analyzing..." << endl;
+
+  // grab no. of entries for tuple loops
+  nTrks = ntTrack -> GetEntries();
+  nTrus = ntTruth -> GetEntries();
+  cout << "      Beginning tuple loops: " << nTrks << " reco. tracks and " << nTrus << " particles to process" << endl;
+
+  // do 1st loop over tracks to:
+  //   (1) apply flat delta-pt cuts
+  //   (2) get graphs for pt-dependent cuts
+  ApplyFlatDeltaPtCuts();
+  CreateSigmaGraphs();
+
+  // do 2nd loop over tracks to:
+  //   (1) apply pt-dependent cuts
+  //   (2) calculate rejection factors
+  ApplyPtDependentDeltaPtCuts();
+  CalculateRejectionFactors();
+
+  // get truth info and efficiencies
+  FillTruthHistograms();
+  CalculateEfficiencies();
   return;
 
 }  // end Analyze()
@@ -71,8 +121,16 @@ void SDeltaPtCutStudy::End() {
   // announce completion
   cout << "    Finishing..." << endl;
 
+  // plot results
+  SetStyles();
+  MakePlots();
+
+  // save and close
   SaveOutput();
   CloseFiles();
+
+  // announce end
+  cout << "  Done with delta-pt cut study!\n" << endl;
   return ;
 
 }  // end End()

@@ -7,6 +7,7 @@ src/*
 !src/SDeltaPtCutStudy.h
 !src/SDeltaPtCutStudy.io.h
 !src/SDeltaPtCutStudy.sys.h
+!src/SDeltaPtCutStudy.ana.h
 !src/SDeltaPtCutStudy.plot.h
 !src/autogen.sh
 !src/configure.ac

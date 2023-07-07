@@ -111,7 +111,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save flat delta-pt cut histograms
   dFlatCut -> cd();
   grRejCut -> Write();
-  for (Ssiz_t iCut = 0; iCut < NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
     hEffCut[iCut]            -> Write();
     hPtDeltaCut[iCut]        -> Write();
     hPtTrackCut[iCut]        -> Write();
@@ -126,7 +126,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save pt-dependent delta-pt cut histograms
   dSigmaCut -> cd();
   grRejSig  -> Write();
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
     hEffSig[iSig]            -> Write();
     hPtDeltaSig[iSig]        -> Write();
     hPtTrackSig[iSig]        -> Write();
@@ -142,11 +142,11 @@ void SDeltaPtCutStudy::SaveOutput() {
   dProject  -> cd();
   grMuProj  -> Write();
   grSigProj -> Write();
-  for (Ssiz_t iProj = 0; iProj < NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
     hPtDeltaProj[iProj] -> Write();
     fPtDeltaProj[iProj] -> Write();
   }
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
     fMuHiProj[iSig]  -> Write();
     fMuLoProj[iSig]  -> Write();
     grMuHiProj[iSig] -> Write();
