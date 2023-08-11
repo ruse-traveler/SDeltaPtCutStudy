@@ -4,12 +4,10 @@ This class reads in the output of the SVtxEvaluator class and studies how the pe
 
 ## Usage
 
-After copying the source files (in `src/`), compile the package in the usual manner:
+After copying the source files (in `src/`), compile with:
 
 ```
-./autogen.sh --prefix=$MYINSTALL
-make -j 4
-make install
+./sphx-build
 ```
 
 And then run with:

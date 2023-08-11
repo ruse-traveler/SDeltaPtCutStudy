@@ -9,6 +9,7 @@ src/*
 !src/SDeltaPtCutStudy.sys.h
 !src/SDeltaPtCutStudy.ana.h
 !src/SDeltaPtCutStudy.plot.h
+!src/SDeltaPtCutStudyLinkDef.h
 !src/autogen.sh
 !src/configure.ac
 !src/Makefile.am
