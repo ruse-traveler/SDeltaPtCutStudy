@@ -23,11 +23,11 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
   cout << "      First loop over reco. tracks:" << endl;
 
   // 1st track loop
-  Long64_t nBytesTrk = 0;
-  for (Long64_t iTrk = 0; iTrk < nTrks; iTrk++) {
+  uint64_t nBytesTrk = 0;
+  for (uint64_t iTrk = 0; iTrk < nTrks; iTrk++) {
 
     // grab entry
-    const Long64_t bytesTrk = ntTrack -> GetEntry(iTrk);
+    const uint64_t bytesTrk = ntTrack -> GetEntry(iTrk);
     if (bytesTrk < 0.) {
       cerr << "WARNING: something wrong with track #" << iTrk << "! Aborting loop!" << endl;
       break;
@@ -35,7 +35,7 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
     nBytesTrk += bytesTrk;
 
     // announce progress
-    const Long64_t iProgTrk = iTrk + 1;
+    const uint64_t iProgTrk = iTrk + 1;
     if (iProgTrk == nTrks) {
       cout << "          Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
     } else {
@@ -105,11 +105,11 @@ void SDeltaPtCutStudy::ApplyPtDependentDeltaPtCuts() {
   cout << "      Second loop over reco. tracks:" << endl;
 
   // 2nd track loop
-  Long64_t nBytesTrk = 0;
-  for (Long64_t iTrk = 0; iTrk < nTrks; iTrk++) {
+  uint64_t nBytesTrk = 0;
+  for (uint64_t iTrk = 0; iTrk < nTrks; iTrk++) {
 
     // grab entry
-    const Long64_t bytesTrk = ntTrack -> GetEntry(iTrk);
+    const uint64_t bytesTrk = ntTrack -> GetEntry(iTrk);
     if (bytesTrk < 0.) {
       cerr << "WARNING: something wrong with track #" << iTrk << "! Aborting loop!" << endl;
       break;
@@ -117,7 +117,7 @@ void SDeltaPtCutStudy::ApplyPtDependentDeltaPtCuts() {
     nBytesTrk += bytesTrk;
 
     // announce progress
-    const Long64_t iProgTrk = iTrk + 1;
+    const uint64_t iProgTrk = iTrk + 1;
     if (iProgTrk == nTrks) {
       cout << "          Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
     } else {
@@ -182,11 +182,11 @@ void SDeltaPtCutStudy::FillTruthHistograms() {
   cout << "      Loop over particles:" << endl;
 
   // truth loop
-  Long64_t nBytesTru = 0;
-  for (Long64_t iTru = 0; iTru < nTrus; iTru++) {
+  uint64_t nBytesTru = 0;
+  for (uint64_t iTru = 0; iTru < nTrus; iTru++) {
 
     // grab entry
-    const Long64_t bytesTru = ntTruth -> GetEntry(iTru);
+    const uint64_t bytesTru = ntTruth -> GetEntry(iTru);
     if (bytesTru < 0.) {
       cerr << "WARNING: something wrong with particle #" << iTru << "! Aborting loop!" << endl;
       break;
@@ -194,7 +194,7 @@ void SDeltaPtCutStudy::FillTruthHistograms() {
     nBytesTru += bytesTru;
 
     // announce progress
-    const Long64_t iProgTru = iTru + 1;
+    const uint64_t iProgTru = iTru + 1;
     if (iProgTru == nTrus) {
       cout << "          Processing particle " << iProgTru << "/" << nTrus << "..." << endl;
     } else {
@@ -294,10 +294,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   grMuProj  -> SetName(sMuProj);
   grSigProj -> SetName(sSigProj);
 
-  fMuHiProj[CONSTANTS::NSigCuts];
-  fMuLoProj[CONSTANTS::NSigCuts];
-  grMuHiProj[CONSTANTS::NSigCuts];
-  grMuLoProj[CONSTANTS::NSigCuts];
+  // fit sigma graphs
   for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
 
     // create graphs
@@ -322,7 +319,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
     fMuHiProj[iSig] -> SetParameter(2, sigHiGuess[2]);
     fMuLoProj[iSig] -> SetParameter(2, sigLoGuess[2]);
 
-    // fit graphs
+    // do fitting
     grMuHiProj[iSig] -> Fit(sFnMuHiProj[iSig].Data(), "", "", ptFitRange[0], ptFitRange[1]);
     grMuLoProj[iSig] -> Fit(sFnMuLoProj[iSig].Data(), "", "", ptFitRange[0], ptFitRange[1]);
   }

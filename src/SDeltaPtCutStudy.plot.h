@@ -17,27 +17,6 @@
 
 void SDeltaPtCutStudy::SetStyles() {
 
-  // histogram style parameters
-  const UInt_t  fColTrue(923);
-  const UInt_t  fColPure(923);
-  const UInt_t  fColTrk(809);
-  const UInt_t  fMarTrue(20);
-  const UInt_t  fMarPure(20);
-  const UInt_t  fMarTrk(46);
-  const UInt_t  fColProj[CONSTANTS::NProj]     = {799, 633, 899, 617, 879, 859, 839, 819};
-  const UInt_t  fMarProj[CONSTANTS::NProj]     = {20,  22,  23,  21,  33,  34,  47,  20};
-  const UInt_t  fColCut[CONSTANTS::NDPtCuts]   = {899, 909, 879, 889, 859, 869, 839};
-  const UInt_t  fMarCut[CONSTANTS::NDPtCuts]   = {24,  26,  32,  25,  27,  28,  30};
-  const Float_t rPtRange[CONSTANTS::NRange]    = {0., 60.};
-  const Float_t rFracRange[CONSTANTS::NRange]  = {0., 4.};
-  const Float_t rDeltaRange[CONSTANTS::NRange] = {0., 0.1};
-
-  // graph/fit style parameters
-  const UInt_t fColFit[CONSTANTS::NProj]       = {803, 636, 893, 620, 883, 863, 843, 813};
-  const UInt_t fColSigFit[CONSTANTS::NSigCuts] = {893, 903, 873, 883, 863};
-  const UInt_t fColSig[CONSTANTS::NSigCuts]    = {899, 909, 879, 889, 859};
-  const UInt_t fMarSig[CONSTANTS::NSigCuts]    = {24,  26,  32,  25,  27};
-
   // histogram text parameters
   const TString sTitle        = "";
   const TString sCounts       = "counts";
@@ -53,22 +32,16 @@ void SDeltaPtCutStudy::SetStyles() {
   const TString sEffAxis      = "#epsilon_{trk}";
 
   // set styles
-  const UInt_t  fFil(0);
-  const UInt_t  fLin(1);
-  const UInt_t  fWid(1);
-  const UInt_t  fTxt(42);
-  const UInt_t  fAln(12);
-  const UInt_t  fCnt(1);
-  const Float_t fLab[CONSTANTS::NPad]  = {0.074, 0.04};
-  const Float_t fTit[CONSTANTS::NPad]  = {0.074, 0.04};
-  const Float_t fOffX[CONSTANTS::NPad] = {1.1,   1.};
-  const Float_t fOffY[CONSTANTS::NPad] = {0.7,   1.3};
-  const Float_t fOffZ[CONSTANTS::NPad] = {1.1,   1.1};
-  grRejCut        -> SetMarkerColor(fColTrue);
-  grRejCut        -> SetMarkerStyle(fMarTrue);
-  grRejCut        -> SetFillColor(fColTrue);
+  const float fLab[CONSTANTS::NPad]  = {0.074, 0.04};
+  const float fTit[CONSTANTS::NPad]  = {0.074, 0.04};
+  const float fOffX[CONSTANTS::NPad] = {1.1,   1.};
+  const float fOffY[CONSTANTS::NPad] = {0.7,   1.3};
+  const float fOffZ[CONSTANTS::NPad] = {1.1,   1.1};
+  grRejCut        -> SetMarkerColor(fColPure);
+  grRejCut        -> SetMarkerStyle(fMarPure);
+  grRejCut        -> SetFillColor(fColPure);
   grRejCut        -> SetFillStyle(fFil);
-  grRejCut        -> SetLineColor(fColTrue);
+  grRejCut        -> SetLineColor(fColPure);
   grRejCut        -> SetLineStyle(fLin);
   grRejCut        -> SetLineWidth(fWid);
   grRejCut        -> SetTitle(sTitle.Data());
@@ -87,11 +60,11 @@ void SDeltaPtCutStudy::SetStyles() {
   grRejCut        -> GetYaxis() -> SetLabelFont(fTxt);
   grRejCut        -> GetYaxis() -> SetLabelSize(fLab[1]);
   grRejCut        -> GetYaxis() -> CenterTitle(fCnt);
-  grRejSig        -> SetMarkerColor(fColTrue);
+  grRejSig        -> SetMarkerColor(fColPure);
   grRejSig        -> SetMarkerStyle(fMarTrue);
-  grRejSig        -> SetFillColor(fColTrue);
+  grRejSig        -> SetFillColor(fColPure);
   grRejSig        -> SetFillStyle(fFil);
-  grRejSig        -> SetLineColor(fColTrue);
+  grRejSig        -> SetLineColor(fColPure);
   grRejSig        -> SetLineStyle(fLin);
   grRejSig        -> SetLineWidth(fWid);
   grRejSig        -> SetTitle(sTitle.Data());
@@ -1065,7 +1038,7 @@ void SDeltaPtCutStudy::MakePlots() {
     "2.5 #times #sigma(#Deltap_{T} / p_{T}^{reco})",
     "3 #times #sigma(#Deltap_{T} / p_{T}^{reco})"
   };
-  const TString sLegSig[CONSTANTS:NSigCuts] = {
+  const TString sLegSig[CONSTANTS::NSigCuts] = {
     "#Deltap_{T} / p_{T}^{reco} #in 1 #times sigma(#Deltap_{T} / p_{T}^{reco})",
     "#Deltap_{T} / p_{T}^{reco} #in 1.5 #times sigma(#Deltap_{T} / p_{T}^{reco})",
     "#Deltap_{T} / p_{T}^{reco} #in 2 #times sigma(#Deltap_{T} / p_{T}^{reco})",

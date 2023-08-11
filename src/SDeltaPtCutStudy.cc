@@ -15,6 +15,7 @@
 #include "SDeltaPtCutStudy.h"
 #include "SDeltaPtCutStudy.io.h"
 #include "SDeltaPtCutStudy.sys.h"
+#include "SDeltaPtCutStudy.ana.h"
 #include "SDeltaPtCutStudy.plot.h"
 
 using namespace std;

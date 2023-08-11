@@ -269,7 +269,6 @@ void SDeltaPtCutStudy::InitHists() {
   sPtTrueVsTrack.Append(sPtRecoBase.Data());
 
   // delta-pt projection names
-  TString sPtProj[CONSTANTS::NProj];
   for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
     sPtProj[iProj] = "h";
     sPtProj[iProj].Append(sPtProjBase.Data());

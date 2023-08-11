@@ -39,6 +39,8 @@ using namespace std;
 
 
 
+// SDeltaPtCutStudy definition ------------------------------------------------
+
 class SDeltaPtCutStudy {
 
   public:
@@ -128,7 +130,7 @@ class SDeltaPtCutStudy {
     double ptFitRange[CONSTANTS::NRange]    = {0.5, 40.};
 
     // histogram parameters [FIXME these shoud be user configurable]
-    TString sPtProjBase("DeltaPtProj");
+    TString sPtProjBase = "DeltaPtProj";
     TString sProjSuffix[CONSTANTS::NProj] = {
       "_pt05",
       "_pt1",
@@ -155,6 +157,37 @@ class SDeltaPtCutStudy {
       "_sigDPt25",
       "_sigDPt3"
     };
+
+    // generic histogram style parameters [FIXME these should be user configurable]
+    uint32_t fFil     = 0;
+    uint32_t fLin     = 1;
+    uint32_t fWid     = 1;
+    uint32_t fTxt     = 42;
+    uint32_t fAln     = 12;
+    uint32_t fCnt     = 1;
+    uint32_t fColTrue = 923;
+    uint32_t fColPure = 923;
+    uint32_t fColTrk  = 809;
+    uint32_t fMarTrue = 20;
+    uint32_t fMarPure = 20;
+    uint32_t fMarTrk  = 46;
+
+    // cut-dependent histogram style paramters [FIXME these should be user configurable]
+    uint32_t fColProj[CONSTANTS::NProj]   = {799, 633, 899, 617, 879, 859, 839, 819};
+    uint32_t fMarProj[CONSTANTS::NProj]   = {20,  22,  23,  21,  33,  34,  47,  20};
+    uint32_t fColCut[CONSTANTS::NDPtCuts] = {899, 909, 879, 889, 859, 869, 839};
+    uint32_t fMarCut[CONSTANTS::NDPtCuts] = {24,  26,  32,  25,  27,  28,  30};
+
+    // plot range parameters [FIXME these should be user configurable]
+    float    rPtRange[CONSTANTS::NRange]    = {0., 60.};
+    float    rFracRange[CONSTANTS::NRange]  = {0., 4.};
+    float    rDeltaRange[CONSTANTS::NRange] = {0., 0.1};
+
+    // graph/fit style parameters [FIXME these should be user configurable]
+    uint32_t fColFit[CONSTANTS::NProj]       = {803, 636, 893, 620, 883, 863, 843, 813};
+    uint32_t fColSigFit[CONSTANTS::NSigCuts] = {893, 903, 873, 883, 863};
+    uint32_t fColSig[CONSTANTS::NSigCuts]    = {899, 909, 879, 889, 859};
+    uint32_t fMarSig[CONSTANTS::NSigCuts]    = {24,  26,  32,  25,  27};
 
     // track tuple addresses
     float trk_event;
@@ -398,12 +431,15 @@ class SDeltaPtCutStudy {
     TH2D* hPtTrueVsTrack;
     TH2D* hPtDeltaVsFracCut[CONSTANTS::NDPtCuts];
     TH2D* hPtDeltaVsFracSig[CONSTANTS::NSigCuts];
-    TH2D* hPtDeltaVsTrueCut[CONSTATS::NDPtCuts];
+    TH2D* hPtDeltaVsTrueCut[CONSTANTS::NDPtCuts];
     TH2D* hPtDeltaVsTrueSig[CONSTANTS::NSigCuts];
     TH2D* hPtDeltaVsTrackCut[CONSTANTS::NDPtCuts];
     TH2D* hPtDeltaVsTrackSig[CONSTANTS::NSigCuts];
     TH2D* hPtTrueVsTrackCut[CONSTANTS::NDPtCuts];
     TH2D* hPtTrueVsTrackSig[CONSTANTS::NSigCuts];
+
+    // projection names
+    TString sPtProj[CONSTANTS::NProj];
 
     // functions
     TF1* fMuHiProj[CONSTANTS::NSigCuts];

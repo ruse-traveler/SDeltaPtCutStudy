@@ -68,8 +68,8 @@ void SDeltaPtCutStudy::OpenFiles() {
 
 void SDeltaPtCutStudy::GetTuples() {
 
-  ntTrack = (TNtuple*) fInput -> Get(SInTrack.Data());
-  ntTruth = (TNtuple*) fInput -> Get(SInTruth.Data());
+  ntTrack = (TNtuple*) fInput -> Get(sInTrack.Data());
+  ntTruth = (TNtuple*) fInput -> Get(sInTruth.Data());
   if (!ntTrack || !ntTruth) {
     cerr << "PANIC: couldn't grab aninput tuple!\n"
          << "       ntTrack = " << ntTrack << "\n"
