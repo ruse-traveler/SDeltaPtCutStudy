@@ -11,6 +11,8 @@
 
 #pragma once
 
+using namespace std;
+
 
 
 // plotting methods -----------------------------------------------------------
