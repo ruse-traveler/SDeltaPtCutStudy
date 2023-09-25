@@ -28,12 +28,12 @@ SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
   // initialize arrays for sigma calculation
   // [FIXME this will need to go wherever NProj and NSigCuts will be set]
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
     muProj[iProj]  = 0.;
     sigProj[iProj] = 0.;
   }
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
-    for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+    for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
       muHiProj[iSig][iProj] = 0.;
       muLoProj[iSig][iProj] = 0.;
     }
@@ -60,7 +60,7 @@ SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
 SDeltaPtCutStudy::~SDeltaPtCutStudy() {
 
-  /* stuff will go here */
+  /* nothing to do here */
 
 }  // end dtor
 

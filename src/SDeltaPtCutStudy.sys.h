@@ -230,9 +230,9 @@ void SDeltaPtCutStudy::InitHists() {
   const UInt_t  nPtBins(1000);
   const UInt_t  nFracBins(1000);
   const UInt_t  nDeltaBins(5000);
-  const Float_t rPtBins[CONSTANTS::NRange]    = {0., 100.};
-  const Float_t rFracBins[CONSTANTS::NRange]  = {0., 10.};
-  const Float_t rDeltaBins[CONSTANTS::NRange] = {0., 5.};
+  const Float_t rPtBins[Const::NRange]    = {0., 100.};
+  const Float_t rFracBins[Const::NRange]  = {0., 10.};
+  const Float_t rDeltaBins[Const::NRange] = {0., 5.};
 
   // histogram names
   const TString sPtTrueBase   = "PtTrue";
@@ -271,22 +271,22 @@ void SDeltaPtCutStudy::InitHists() {
   sPtTrueVsTrack.Append(sPtRecoBase.Data());
 
   // delta-pt projection names
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
     sPtProj[iProj] = "h";
     sPtProj[iProj].Append(sPtProjBase.Data());
     sPtProj[iProj].Append(sProjSuffix[iProj].Data());
   }
 
   // flat delta-pt cut names
-  TString sPtDeltaCut[CONSTANTS::NDPtCuts];
-  TString sPtTrackCut[CONSTANTS::NDPtCuts];
-  TString sPtFracCut[CONSTANTS::NDPtCuts];
-  TString sPtTrkTruCut[CONSTANTS::NDPtCuts];
-  TString sPtDeltaVsFracCut[CONSTANTS::NDPtCuts];
-  TString sPtDeltaVsTrueCut[CONSTANTS::NDPtCuts];
-  TString sPtDeltaVsTrackCut[CONSTANTS::NDPtCuts];
-  TString sPtTrueVsTrackCut[CONSTANTS::NDPtCuts];
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  TString sPtDeltaCut[Const::NDPtCuts];
+  TString sPtTrackCut[Const::NDPtCuts];
+  TString sPtFracCut[Const::NDPtCuts];
+  TString sPtTrkTruCut[Const::NDPtCuts];
+  TString sPtDeltaVsFracCut[Const::NDPtCuts];
+  TString sPtDeltaVsTrueCut[Const::NDPtCuts];
+  TString sPtDeltaVsTrackCut[Const::NDPtCuts];
+  TString sPtTrueVsTrackCut[Const::NDPtCuts];
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     sPtDeltaCut[iCut]  = "h";
     sPtTrackCut[iCut]  = "h";
     sPtFracCut[iCut]   = "h";
@@ -324,15 +324,15 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // pt-dependent delta-pt cut names
-  TString sPtDeltaSig[CONSTANTS::NSigCuts];
-  TString sPtTrackSig[CONSTANTS::NSigCuts];
-  TString sPtFracSig[CONSTANTS::NSigCuts];
-  TString sPtTrkTruSig[CONSTANTS::NSigCuts];
-  TString sPtDeltaVsFracSig[CONSTANTS::NSigCuts];
-  TString sPtDeltaVsTrueSig[CONSTANTS::NSigCuts];
-  TString sPtDeltaVsTrackSig[CONSTANTS::NSigCuts];
-  TString sPtTrueVsTrackSig[CONSTANTS::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  TString sPtDeltaSig[Const::NSigCuts];
+  TString sPtTrackSig[Const::NSigCuts];
+  TString sPtFracSig[Const::NSigCuts];
+  TString sPtTrkTruSig[Const::NSigCuts];
+  TString sPtDeltaVsFracSig[Const::NSigCuts];
+  TString sPtDeltaVsTrueSig[Const::NSigCuts];
+  TString sPtDeltaVsTrackSig[Const::NSigCuts];
+  TString sPtTrueVsTrackSig[Const::NSigCuts];
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     sPtDeltaSig[iSig]  = "h";
     sPtTrackSig[iSig]  = "h";
     sPtFracSig[iSig]   = "h";
@@ -391,13 +391,13 @@ void SDeltaPtCutStudy::InitHists() {
   hPtTrueVsTrack  -> Sumw2();
 
   // delta-pt projection histograms
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
     hPtDeltaProj[iProj] = new TH1D(sPtProj[iProj].Data(), "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtDeltaProj[iProj] -> Sumw2();
   }
 
   // flat delta-pt cut histograms
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     hPtDeltaCut[iCut]  = new TH1D(sPtDeltaCut[iCut].Data(),  "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtTrackCut[iCut]  = new TH1D(sPtTrackCut[iCut].Data(),  "", nPtBins,    rPtBins[0],    rPtBins[1]);
     hPtFracCut[iCut]   = new TH1D(sPtFracCut[iCut].Data(),   "", nFracBins,  rFracBins[0],  rFracBins[1]);
@@ -418,7 +418,7 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // pt-dependent delta-pt cut histograms
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     hPtDeltaSig[iSig]  = new TH1D(sPtDeltaSig[iSig].Data(),  "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtTrackSig[iSig]  = new TH1D(sPtTrackSig[iSig].Data(),  "", nPtBins,    rPtBins[0],    rPtBins[1]);
     hPtFracSig[iSig]   = new TH1D(sPtFracSig[iSig].Data(),   "", nFracBins,  rFracBins[0],  rFracBins[1]);

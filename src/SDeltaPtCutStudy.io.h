@@ -45,6 +45,117 @@ void SDeltaPtCutStudy::SetInputTuples(const TString sTrack, const TString sTruth
 
 
 
+void SDeltaPtCutStudy::SetGeneralTrackCuts(const uint32_t nInttCut, const uint32_t nMvtxCut, const uint32_t nTpcCut, const double qualCut, const double vzCut, const double ptCut) {
+
+  nInttTrkMin = nInttCut;
+  nMVtxTrkMin = nMvtxCut;
+  nTpcTrkMin  = nTpcCut;
+  qualTrkMax  = qualCut;
+  vzTrkMax    = vzCut;
+  ptTrkMin    = ptCut;
+  cout << "    Set general track cuts:\n"
+       << "      nIntt   > " << nInttTrkMin << "\n"
+       << "      nMvtx   > " << nMVtxTrkMin << "\n"
+       << "      nTpc    > " << nTpcTrkMin  << "\n"
+       << "      quality < " << qualTrkMax  << "\n"
+       << "      |vz|    < " << vzTrkMax    << "\n"
+       << "      pt      > " << ptTrkMin
+       << endl;
+  return;
+
+}  // end 'SetGeneralTrackCuts(uint32_t, uint32_t, uint32_t, double, double, double)'
+
+
+
+void SDeltaPtCutStudy::SetPlotRanges(const pair<float, float> ptRange, const pair<float, float> fracRange, const pair<float, float> deltaRange) {
+
+  rPtRange[0]    = ptRange.first;
+  rPtRange[1]    = ptRange.second;
+  rFracRange[0]  = fracRange.first;
+  rFracRange[1]  = fracRange.second;
+  rDeltaRange[0] = deltaRange.first;
+  rDeltaRange[1] = deltaRange.second;
+  cout << "    Set plot ranges:\n"
+       << "      pt    = (" << rPtRange[0]    << ", " << rPtRange[1]    << ")\n"
+       << "      frac  = (" << rFracRange[0]  << ", " << rFracRange[1]  << ")\n"
+       << "      delta = (" << rDeltaRange[0] << ", " << rDeltaRange[1] << ")"
+       << endl;
+  return;
+
+}  // end 'SetPlotRanges(pair<float, float>, pair<float, float>, pair<float, float>)'
+
+
+
+void SDeltaPtCutStudy::SetGeneralStyleParameters(const array<uint32_t, Const::NTypes> arrCol, const array<uint32_t, Const::NTypes> arrMar) {
+
+  fColTrue = arrCol[0];
+  fColPure = arrCol[1];
+  fColTrk  = arrCol[2];
+  fMarTrue = arrMar[0];
+  fMarPure = arrMar[1];
+  fMarTrk  = arrMar[2];
+  cout << "    Set general style parameters:\n"
+       << "      colors (true, pure, track)  = (" << fColTrue << ", " << fColPure << ", " << fColTrk << ")\n"
+       << "      markers (true, pure, track) = (" << fMarTrue << ", " << fMarPure << ", " << fMarTrk << ")"
+       << endl;
+  return;
+
+}  // end 'SetGeneralStyleParameters(array<uint32_t>, array<uint32_t>)'
+
+
+
+void SDeltaPtCutStudy::SetGeneralHistParameters(const uint32_t fill, const uint32_t line, const uint32_t width, const uint32_t font, const uint32_t align, const uint32_t center) {
+
+  fFil = fill;
+  fLin = line;
+  fWid = width;
+  fTxt = font;
+  fAln = align;
+  fCnt = center;
+  cout << "    Set general histogram parameters:\n"
+       << "      fill   = " << fFil << "\n"
+       << "      line   = " << fLin << "\n"
+       << "      width  = " << fWid << "\n"
+       << "      font   = " << fTxt << "\n"
+       << "      align  = " << fAln << "\n"
+       << "      center = " << fCnt
+       << endl;
+  return;
+
+}  // end 'SetGeneralHistParameters(uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t)'
+
+
+
+void SDeltaPtCutStudy::SetEffRebinParameters(const bool doRebin, const size_t nRebin) {
+
+  doEffRebin = doRebin;
+  nEffRebin  = nRebin;
+  cout << "    Set efficiency rebinning parameters:\n"
+       << "      do rebin? = " << doEffRebin << "\n"
+       << "      nRebin    = " << nEffRebin
+       << endl;
+  return;
+
+}  // end 'SetRebinParameters(bool, size_t)'
+
+
+
+void SDeltaPtCutStudy::SetProjectionParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams) {
+
+  nProj = projPars.size();
+  for (auto param : projPars) {
+    ptProj.push_back(get<0>(param));
+    sProjSuffix.push_back(get<1>(param));
+    fColProj.push_back(get<2>(param));
+    fMarProj.push_back(get<3>(param));
+    fColFit.push_back(get<4>(param));
+  }
+  return;
+
+}  // end 'SetProjectionParameters(vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>>)'
+
+
+
 // private io methods ---------------------------------------------------------
 
 void SDeltaPtCutStudy::OpenFiles() {
@@ -111,7 +222,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save flat delta-pt cut histograms
   dFlatCut -> cd();
   grRejCut -> Write();
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     hEffCut[iCut]            -> Write();
     hPtDeltaCut[iCut]        -> Write();
     hPtTrackCut[iCut]        -> Write();
@@ -126,7 +237,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save pt-dependent delta-pt cut histograms
   dSigmaCut -> cd();
   grRejSig  -> Write();
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     hEffSig[iSig]            -> Write();
     hPtDeltaSig[iSig]        -> Write();
     hPtTrackSig[iSig]        -> Write();
@@ -142,11 +253,11 @@ void SDeltaPtCutStudy::SaveOutput() {
   dProject  -> cd();
   grMuProj  -> Write();
   grSigProj -> Write();
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
     hPtDeltaProj[iProj] -> Write();
     fPtDeltaProj[iProj] -> Write();
   }
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     fMuHiProj[iSig]  -> Write();
     fMuLoProj[iSig]  -> Write();
     grMuHiProj[iSig] -> Write();

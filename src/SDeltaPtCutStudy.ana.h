@@ -37,9 +37,9 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
     // announce progress
     const uint64_t iProgTrk = iTrk + 1;
     if (iProgTrk == nTrks) {
-      cout << "          Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
+      cout << "        Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
     } else {
-      cout << "          Processing track " << iProgTrk << "/" << nTrks << "...\r" << flush;
+      cout << "        Processing track " << iProgTrk << "/" << nTrks << "...\r" << flush;
     }
 
     // do calculations
@@ -68,7 +68,7 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
 
     // apply delta-pt cuts
     const Bool_t isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
-    for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+    for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
       const Bool_t isInDeltaPtCut = (ptDelta < ptDeltaMax[iCut]);
       if (isInDeltaPtCut) {
 
@@ -119,9 +119,9 @@ void SDeltaPtCutStudy::ApplyPtDependentDeltaPtCuts() {
     // announce progress
     const uint64_t iProgTrk = iTrk + 1;
     if (iProgTrk == nTrks) {
-      cout << "          Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
+      cout << "        Processing track " << iProgTrk << "/" << nTrks << "..." << endl;
     } else {
-      cout << "          Processing track " << iProgTrk << "/" << nTrks << "...\r" << flush;
+      cout << "        Processing track " << iProgTrk << "/" << nTrks << "...\r" << flush;
     }
 
     // do calculations
@@ -196,9 +196,9 @@ void SDeltaPtCutStudy::FillTruthHistograms() {
     // announce progress
     const uint64_t iProgTru = iTru + 1;
     if (iProgTru == nTrus) {
-      cout << "          Processing particle " << iProgTru << "/" << nTrus << "..." << endl;
+      cout << "        Processing particle " << iProgTru << "/" << nTrus << "..." << endl;
     } else {
-      cout << "          Processing particle" << iProgTru << "/" << nTrus << "...\r" << flush;
+      cout << "        Processing particle " << iProgTru << "/" << nTrus << "...\r" << flush;
     }
 
     // fill truth histogram
@@ -222,8 +222,8 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   const TString sMuBase   = "ProjectionMean";
 
   // projection fit names
-  TString sFitProj[CONSTANTS::NProj];
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  TString sFitProj[Const::NProj];
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
     sFitProj[iProj] = "f";
     sFitProj[iProj].Append(sPtProjBase.Data());
     sFitProj[iProj].Append(sProjSuffix[iProj].Data());
@@ -232,7 +232,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   // project slices of delta-pt and get sigmas
   const UInt_t fWidFit = 2;
   const UInt_t fLinFit = 1;
-  for (Ssiz_t iProj = 0; iProj < CONSTANTS::NProj; iProj++) {
+  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
 
     // do projection
     const UInt_t iBinProj = hPtDeltaVsTrack -> GetXaxis() -> FindBin(ptProj[iProj]);
@@ -269,11 +269,11 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   sMuProj.Append(sMuBase.Data());
   sSigProj.Append(sSigBase.Data());
 
-  TString sGrMuHiProj[CONSTANTS::NSigCuts];
-  TString sGrMuLoProj[CONSTANTS::NSigCuts];
-  TString sFnMuHiProj[CONSTANTS::NSigCuts];
-  TString sFnMuLoProj[CONSTANTS::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  TString sGrMuHiProj[Const::NSigCuts];
+  TString sGrMuLoProj[Const::NSigCuts];
+  TString sFnMuHiProj[Const::NSigCuts];
+  TString sFnMuLoProj[Const::NSigCuts];
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     sGrMuHiProj[iSig] = "gr";
     sGrMuLoProj[iSig] = "gr";
     sFnMuHiProj[iSig] = "f";
@@ -289,8 +289,8 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   }
 
   // construct sigma graphs
-  grMuProj  = new TGraph(CONSTANTS::NProj, ptProj, muProj);
-  grSigProj = new TGraph(CONSTANTS::NProj, ptProj, sigProj);
+  grMuProj  = new TGraph(Const::NProj, ptProj, muProj);
+  grSigProj = new TGraph(Const::NProj, ptProj, sigProj);
   grMuProj  -> SetName(sMuProj);
   grSigProj -> SetName(sSigProj);
 
@@ -338,13 +338,13 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
   const TString sRejSigBase = "Reject_sigmaCut";
 
   // calculate flat delta-pt rejection factors
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     rejCut[iCut] = (Double_t) nNormCut[iCut] / (Double_t) nWeirdCut[iCut];
   }
   cout << "      Calculated flat delta-pt rejection factors." << endl;
 
   // calculate pt-dependent delta-pt rejection factors
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     rejSig[iSig] = (Double_t) nNormSig[iSig] / (Double_t) nWeirdSig[iSig];
   }
   cout << "      Calculated pt-depdendent delta-pt rejection factors\n"
@@ -353,13 +353,13 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
        << endl;
 
   // announce flat delta-pt rejection factors
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     cout << "          n(Norm, Weird) = (" << nNormCut[iCut] << ", " << nWeirdCut[iCut] << "), rejection = " << rejCut[iCut] << endl;
   }
 
   // announce pt-dependent delta-pt rejection factors
   cout << "        Pt-dependent delta-pt cuts" << endl;
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     cout << "          n(Norm, Weird) = (" << nNormSig[iSig] << ", " << nWeirdSig[iSig] << "), rejection = " << rejSig[iSig] << endl;
   }
 
@@ -369,8 +369,8 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
   sRejCut.Append(sRejCutBase.Data());
   sRejSig.Append(sRejSigBase.Data());
 
-  grRejCut = new TGraph(CONSTANTS::NDPtCuts, ptDeltaMax, rejCut);
-  grRejSig = new TGraph(CONSTANTS::NSigCuts, ptDeltaSig, rejSig);
+  grRejCut = new TGraph(Const::NDPtCuts, ptDeltaMax, rejCut);
+  grRejSig = new TGraph(Const::NSigCuts, ptDeltaSig, rejSig);
   grRejCut -> SetName(sRejCut.Data());
   grRejSig -> SetName(sRejSig.Data());
 
@@ -390,7 +390,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   if (doEffRebin) {
     hPtTruth  -> Rebin(nEffRebin);
     hPtTrkTru -> Rebin(nEffRebin);
-    for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+    for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
       hPtTrkTruCut[iCut] -> Rebin(nEffRebin);
     }
     for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
@@ -403,16 +403,16 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   sEff.Append(sEffBase.Data());
 
   // create flat delta-pt cut efficiency names
-  TString sEffCut[CONSTANTS::NDPtCuts];
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  TString sEffCut[Const::NDPtCuts];
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     sEffCut[iCut] = "h";
     sEffCut[iCut].Append(sEffBase.Data());
     sEffCut[iCut].Append(sDPtSuffix[iCut].Data());
   }
 
   // create pt-dependent delta-pt cut efficiency names
-  TString sEffSig[CONSTANTS::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  TString sEffSig[Const::NSigCuts];
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     sEffSig[iSig] = "h";
     sEffSig[iSig].Append(sEffBase.Data());
     sEffSig[iSig].Append(sSigSuffix[iSig].Data());
@@ -424,7 +424,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   hEff -> Divide(hPtTrkTru, hPtTruth, 1., 1.);
 
   // calculate flat delta-pt cut efficiencies
-  for (Ssiz_t iCut = 0; iCut < CONSTANTS::NDPtCuts; iCut++) {
+  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
     hEffCut[iCut] = (TH1D*) hPtTruth -> Clone();
     hEffCut[iCut] -> SetName(sEffCut[iCut].Data());
     hEffCut[iCut] -> Reset("ICES");
@@ -432,7 +432,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   }
 
   // calculate pt-dependent delta-pt cut efficiencies
-  for (Ssiz_t iSig = 0; iSig < CONSTANTS::NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
     hEffSig[iSig] = (TH1D*) hPtTruth -> Clone();
     hEffSig[iSig] -> SetName(sEffSig[iSig].Data());
     hEffSig[iSig] -> Reset("ICES");

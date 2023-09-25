@@ -10,13 +10,14 @@
 #define DODELTAPTCUTSTUDY_C
 
 // standard c includes
+#include <array>
 #include <cstdlib>
 #include <utility>
 // root includes
-#include "TROOT.h"
-#include "TString.h"
+#include <TROOT.h>
+#include <TString.h>
 // user includes
-#include </sphenix/user/danderson/install/include/sdeltaptcutstudy/SDeltaPtCutStudy.h>
+#include "/sphenix/user/danderson/install/include/sdeltaptcutstudy/SDeltaPtCutStudy.h"
 
 using namespace std;
 
@@ -24,11 +25,12 @@ using namespace std;
 R__LOAD_LIBRARY(/sphenix/user/danderson/install/lib/libsdeltaptcutstudy.so)
 
 // global constants
-static const Bool_t DefBatch = false;
+static const bool   DefBatch = false;
+static const size_t NTypes  = 3;
 
 
 
-void DoDeltaPtCutStudy(const Bool_t inBatchMode = DefBatch) {
+void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
 
   // lower verbosity
   gErrorIgnoreLevel = kWarning;
@@ -39,10 +41,60 @@ void DoDeltaPtCutStudy(const Bool_t inBatchMode = DefBatch) {
   const TString sInTrack("ntp_track");
   const TString sInTruth("ntp_gtrack");
 
+  // projection parameters
+  //   <0> = bin center of projection
+  //   <1> = histogram suffix
+  //   <2> = histogram color
+  //   <3> = histogram marker
+  //   <4> = fit color
+  const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> = {
+    make_tuple(0.5, "_pt05", 799, 20, 803),
+    make_tuple(1.0, "_pt1",  633, 22, 636),
+    make_tuple(2.0, "_pt2",  899, 23, 893),
+    make_tuple(5.0, "_pt5",  617, 21, 620),
+    make_tuple(10., "_pt10", 879, 33, 883),
+    make_tuple(20., "_pt20", 859, 34, 863),
+    make_tuple(30., "_pt30", 839, 47, 843),
+    make_tuple(40., "_pt40", 819, 20, 813)
+  };
+  const TString sPtProjBase("DeltaPtProj");
+
+  // general track cuts
+  const uint32_t nInttTrkMin = 1;
+  const uint32_t nMVtxTrkMin = 2;
+  const uint32_t nTpcTrkMin  = 35;
+  const double   qualTrkMax  = 10.;
+  const double   vzTrkMax    = 10.;
+  const double   ptTrkMin    = 0.1;
+
+  // general style parameters
+  const pair<float, float>      rPtRange    = {0., 60.};
+  const pair<float, float>      rFracRange  = {0., 4.};
+  const pair<float, float>      rDeltaRange = {0., 0.1};
+  const array<uint32_t, NTypes> arrColGraph = {923, 923, 809};
+  const array<uint32_t, NTypes> arrMarGraph = {20,  20,  46};
+
+  // general histogram parameters
+  const uint32_t fFil = 0;
+  const uint32_t fLin = 1;
+  const uint32_t fWid = 1;
+  const uint32_t fTxt = 42;
+  const uint32_t fAln = 12;
+  const uint32_t fCnt = 1;
+
+  // misc plot parameters
+  bool   doEffRebin = true;
+  size_t nEffRebin  = 5;
+
   // run track cut study
   SDeltaPtCutStudy *study = new SDeltaPtCutStudy();
   study -> SetInputOutputFiles(sInFile, sOutFile);
   study -> SetInputTuples(sInTrack, sInTruth);
+  study -> SetGeneralTrackCuts(nInttTrkMin, nMVtxTrkMin, nTpcTrkMin, qualTrkMax, vzTrkMax, ptTrkMin);
+  study -> SetPlotRanges(rPtRange, rFracRange, rDeltaRange);
+  study -> SetGeneralStyleParameters(arrColGraph, arrMarGraph);
+  study -> SetGeneralHistParameters(fFil, fLin, fWid, fTxt, fAln, fCnt);
+  study -> SetEffRebinParameters(doEffRebin, nEffRebin);
   study -> Init();
   study -> Analyze();
   study -> End();

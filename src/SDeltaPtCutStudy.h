@@ -13,6 +13,7 @@
 #define SDELTAPTCUTSTUDY_H
 
 // standard c includes
+#include <array>
 #include <cmath>
 #include <vector>
 #include <cassert>
@@ -43,6 +44,20 @@ using namespace std;
 
 class SDeltaPtCutStudy {
 
+  // constants
+  enum Const {
+    NTxt     = 3,
+    NPad     = 2,
+    NPar     = 3,
+    NVtx     = 4,
+    NRange   = 2,
+    NProj    = 8,
+    NTypes   = 3,
+    NTrkCuts = 6,
+    NDPtCuts = 7,
+    NSigCuts = 5
+  };
+
   public:
 
     // ctor/dtor [*.cc]
@@ -57,21 +72,14 @@ class SDeltaPtCutStudy {
     // setters [*.io.h]
     void SetInputOutputFiles(const TString sInput, const TString sOutput);
     void SetInputTuples(const TString sTrack, const TString sTruth);
+    void SetGeneralTrackCuts(const uint32_t nInttCut, const uint32_t nMvtxCut, const uint32_t nTpcCut, const double qualCut, const double vzCut, const double ptCut);
+    void SetPlotRanges(const pair<float, float> ptRange, const pair<float, float> fracRange, const pair<float, float> deltaRange);
+    void SetGeneralStyleParameters(const array<uint32_t, Const::NTypes> arrCol, const array<uint32_t, Const::NTypes> arrMar);
+    void SetGeneralHistParameters(const uint32_t fill, const uint32_t line, const uint32_t width, const uint32_t font, const uint32_t align, const uint32_t center);
+    void SetEffRebinParameters(const bool doRebin, const size_t nRebin = 2);
+    void SetProjectionParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams);
 
   private:
-
-    // constants
-    enum CONSTANTS {
-      NTxt     = 3,
-      NPad     = 2,
-      NPar     = 3,
-      NVtx     = 4,
-      NRange   = 2,
-      NProj    = 8,
-      NTrkCuts = 6,
-      NDPtCuts = 7,
-      NSigCuts = 5
-    };
 
     // io methods [*.io.h]
     void OpenFiles();
@@ -105,33 +113,42 @@ class SDeltaPtCutStudy {
     TString  sInTrack;
     TString  sInTruth;
 
-    // cut parameters [FIXME these should be user configurable]
-    size_t nInttTrkMin                     = 1;
-    size_t nMVtxTrkMin                     = 2;
-    size_t nTpcTrkMin                      = 35;
-    double qualTrkMax                      = 10.;
-    double vzTrkMax                        = 10.;
-    double ptTrkMin                        = 0.1;
-    double ptDeltaMax[CONSTANTS::NDPtCuts] = {0.5, 0.25, 0.1, 0.05, 0.03, 0.02, 0.01};
-    double ptDeltaSig[CONSTANTS::NSigCuts] = {1.,  1.5,  2.,  2.5,  3.};
-    double normRange[CONSTANTS::NRange]    = {0.2, 1.2};
+    // general cut parameters
+    uint32_t nInttTrkMin = 1;
+    uint32_t nMVtxTrkMin = 2;
+    uint32_t nTpcTrkMin  = 35;
+    double   qualTrkMax  = 10.;
+    double   vzTrkMax    = 10.;
+    double   ptTrkMin    = 0.1;
+
+    // delta-pt/pt cut parameters
+    double ptDeltaMax[Const::NDPtCuts] = {0.5, 0.25, 0.1, 0.05, 0.03, 0.02, 0.01};
+    double ptDeltaSig[Const::NSigCuts] = {1.,  1.5,  2.,  2.5,  3.};
+    double normRange[Const::NRange]    = {0.2, 1.2};
 
     // plot parameters [FIXME these should be user configurable]
-    size_t iCutToDraw = CONSTANTS::NDPtCuts - 3;
-    size_t iSigToDraw = CONSTANTS::NSigCuts - 3;
-    size_t nEffRebin  = 5;
-    bool   doEffRebin = true;
+    size_t iCutToDraw = Const::NDPtCuts - 3;
+    size_t iSigToDraw = Const::NSigCuts - 3;
 
     // sigma calculation parameters [FIXME these should be user configurable]
-    double ptProj[CONSTANTS::NProj]         = {0.5, 1., 2., 5., 10., 20., 30., 40.};
-    double sigHiGuess[CONSTANTS::NPar]      = {1., -1., 1.};
-    double sigLoGuess[CONSTANTS::NPar]      = {1., -1., 1.};
-    double deltaFitRange[CONSTANTS::NRange] = {0.,  0.1};
-    double ptFitRange[CONSTANTS::NRange]    = {0.5, 40.};
+    //double ptProj[nProj]         = {0.5, 1., 2., 5., 10., 20., 30., 40.};
+    double sigHiGuess[Const::NPar]      = {1., -1., 1.};
+    double sigLoGuess[Const::NPar]      = {1., -1., 1.};
+    double deltaFitRange[Const::NRange] = {0.,  0.1};
+    double ptFitRange[Const::NRange]    = {0.5, 40.};
+
+    // projection parameters
+    size_t           nProj       = 0;
+    TString          sPtProjBase = "DeltaPtProj";
+    vector<float>    ptProj;
+    vector<TString>  sProjSuffix;
+    vector<uint32_t> fColProj;
+    vector<uint32_t> fMarProj;
+    vector<uint32_t> fColFit;
 
     // histogram parameters [FIXME these shoud be user configurable]
-    TString sPtProjBase = "DeltaPtProj";
-    TString sProjSuffix[CONSTANTS::NProj] = {
+/*
+    TString sProjSuffix[nProj] = {
       "_pt05",
       "_pt1",
       "_pt2",
@@ -141,7 +158,8 @@ class SDeltaPtCutStudy {
       "_pt30",
       "_pt40"
     }; 
-    TString sDPtSuffix[CONSTANTS::NDPtCuts] = {
+*/
+    TString sDPtSuffix[Const::NDPtCuts] = {
       "_dPt50",
       "_dPt25",
       "_dPt10",
@@ -150,7 +168,7 @@ class SDeltaPtCutStudy {
       "_dPt02",
       "_dPt01"
     };
-    TString sSigSuffix[CONSTANTS::NSigCuts] = {
+    TString sSigSuffix[Const::NSigCuts] = {
       "_sigDPt1",
       "_sidDpt15",
       "_sigDPt2",
@@ -158,36 +176,38 @@ class SDeltaPtCutStudy {
       "_sigDPt3"
     };
 
-    // generic histogram style parameters [FIXME these should be user configurable]
-    uint32_t fFil     = 0;
-    uint32_t fLin     = 1;
-    uint32_t fWid     = 1;
-    uint32_t fTxt     = 42;
-    uint32_t fAln     = 12;
-    uint32_t fCnt     = 1;
-    uint32_t fColTrue = 923;
-    uint32_t fColPure = 923;
-    uint32_t fColTrk  = 809;
-    uint32_t fMarTrue = 20;
-    uint32_t fMarPure = 20;
-    uint32_t fMarTrk  = 46;
+    // plot range parameters
+    float rPtRange[Const::NRange]    = {0., 60.};
+    float rFracRange[Const::NRange]  = {0., 4.};
+    float rDeltaRange[Const::NRange] = {0., 0.1};
+
+    // general histogram style parameters
+    uint32_t fFil       = 0;
+    uint32_t fLin       = 1;
+    uint32_t fWid       = 1;
+    uint32_t fTxt       = 42;
+    uint32_t fAln       = 12;
+    uint32_t fCnt       = 1;
+    uint32_t fColTrue   = 923;
+    uint32_t fColPure   = 923;
+    uint32_t fColTrk    = 809;
+    uint32_t fMarTrue   = 20;
+    uint32_t fMarPure   = 20;
+    uint32_t fMarTrk    = 46;
+    size_t   nEffRebin  = 5;
+    bool     doEffRebin = true;
 
     // cut-dependent histogram style paramters [FIXME these should be user configurable]
-    uint32_t fColProj[CONSTANTS::NProj]   = {799, 633, 899, 617, 879, 859, 839, 819};
-    uint32_t fMarProj[CONSTANTS::NProj]   = {20,  22,  23,  21,  33,  34,  47,  20};
-    uint32_t fColCut[CONSTANTS::NDPtCuts] = {899, 909, 879, 889, 859, 869, 839};
-    uint32_t fMarCut[CONSTANTS::NDPtCuts] = {24,  26,  32,  25,  27,  28,  30};
-
-    // plot range parameters [FIXME these should be user configurable]
-    float    rPtRange[CONSTANTS::NRange]    = {0., 60.};
-    float    rFracRange[CONSTANTS::NRange]  = {0., 4.};
-    float    rDeltaRange[CONSTANTS::NRange] = {0., 0.1};
+    //uint32_t fColProj[nProj]   = {799, 633, 899, 617, 879, 859, 839, 819};
+    //uint32_t fMarProj[nProj]   = {20,  22,  23,  21,  33,  34,  47,  20};
+    uint32_t fColCut[Const::NDPtCuts] = {899, 909, 879, 889, 859, 869, 839};
+    uint32_t fMarCut[Const::NDPtCuts] = {24,  26,  32,  25,  27,  28,  30};
 
     // graph/fit style parameters [FIXME these should be user configurable]
-    uint32_t fColFit[CONSTANTS::NProj]       = {803, 636, 893, 620, 883, 863, 843, 813};
-    uint32_t fColSigFit[CONSTANTS::NSigCuts] = {893, 903, 873, 883, 863};
-    uint32_t fColSig[CONSTANTS::NSigCuts]    = {899, 909, 879, 889, 859};
-    uint32_t fMarSig[CONSTANTS::NSigCuts]    = {24,  26,  32,  25,  27};
+   // uint32_t fColFit[nProj]       = {803, 636, 893, 620, 883, 863, 843, 813};
+    uint32_t fColSigFit[Const::NSigCuts] = {893, 903, 873, 883, 863};
+    uint32_t fColSig[Const::NSigCuts]    = {899, 909, 879, 889, 859};
+    uint32_t fMarSig[Const::NSigCuts]    = {24,  26,  32,  25,  27};
 
     // track tuple addresses
     float trk_event;
@@ -388,18 +408,18 @@ class SDeltaPtCutStudy {
     float tru_nclusmms;
 
     // for sigma calculation
-    double muProj[CONSTANTS::NProj];
-    double sigProj[CONSTANTS::NProj];
-    double muHiProj[CONSTANTS::NSigCuts][CONSTANTS::NProj];
-    double muLoProj[CONSTANTS::NSigCuts][CONSTANTS::NProj];
+    double muProj[nProj];
+    double sigProj[nProj];
+    double muHiProj[Const::NSigCuts][nProj];
+    double muLoProj[Const::NSigCuts][nProj];
 
     // for reject calculation
-    uint64_t nNormCut[CONSTANTS::NDPtCuts];
-    uint64_t nNormSig[CONSTANTS::NSigCuts];
-    uint64_t nWeirdCut[CONSTANTS::NDPtCuts];
-    uint64_t nWeirdSig[CONSTANTS::NSigCuts];
-    double   rejCut[CONSTANTS::NDPtCuts];
-    double   rejSig[CONSTANTS::NSigCuts];
+    uint64_t nNormCut[Const::NDPtCuts];
+    uint64_t nNormSig[Const::NSigCuts];
+    uint64_t nWeirdCut[Const::NDPtCuts];
+    uint64_t nWeirdSig[Const::NSigCuts];
+    double   rejCut[Const::NDPtCuts];
+    double   rejSig[Const::NSigCuts];
 
     // for tuple loops
     uint64_t nTrks;
@@ -412,47 +432,47 @@ class SDeltaPtCutStudy {
     TH1D* hPtTrack;
     TH1D* hPtFrac;
     TH1D* hPtTrkTru;
-    TH1D* hPtDeltaProj[CONSTANTS::NProj];
-    TH1D* hPtDeltaCut[CONSTANTS::NDPtCuts];
-    TH1D* hPtDeltaSig[CONSTANTS::NSigCuts];
-    TH1D* hPtTrackCut[CONSTANTS::NDPtCuts];
-    TH1D* hPtTrackSig[CONSTANTS::NSigCuts];
-    TH1D* hPtFracCut[CONSTANTS::NDPtCuts];
-    TH1D* hPtFracSig[CONSTANTS::NSigCuts];
-    TH1D* hPtTrkTruCut[CONSTANTS::NDPtCuts];
-    TH1D* hPtTrkTruSig[CONSTANTS::NSigCuts];
-    TH1D* hEffCut[CONSTANTS::NDPtCuts];
-    TH1D* hEffSig[CONSTANTS::NSigCuts];
+    TH1D* hPtDeltaProj[nProj];
+    TH1D* hPtDeltaCut[Const::NDPtCuts];
+    TH1D* hPtDeltaSig[Const::NSigCuts];
+    TH1D* hPtTrackCut[Const::NDPtCuts];
+    TH1D* hPtTrackSig[Const::NSigCuts];
+    TH1D* hPtFracCut[Const::NDPtCuts];
+    TH1D* hPtFracSig[Const::NSigCuts];
+    TH1D* hPtTrkTruCut[Const::NDPtCuts];
+    TH1D* hPtTrkTruSig[Const::NSigCuts];
+    TH1D* hEffCut[Const::NDPtCuts];
+    TH1D* hEffSig[Const::NSigCuts];
 
     // 2d histograms
     TH2D* hPtDeltaVsFrac;
     TH2D* hPtDeltaVsTrue;
     TH2D* hPtDeltaVsTrack;
     TH2D* hPtTrueVsTrack;
-    TH2D* hPtDeltaVsFracCut[CONSTANTS::NDPtCuts];
-    TH2D* hPtDeltaVsFracSig[CONSTANTS::NSigCuts];
-    TH2D* hPtDeltaVsTrueCut[CONSTANTS::NDPtCuts];
-    TH2D* hPtDeltaVsTrueSig[CONSTANTS::NSigCuts];
-    TH2D* hPtDeltaVsTrackCut[CONSTANTS::NDPtCuts];
-    TH2D* hPtDeltaVsTrackSig[CONSTANTS::NSigCuts];
-    TH2D* hPtTrueVsTrackCut[CONSTANTS::NDPtCuts];
-    TH2D* hPtTrueVsTrackSig[CONSTANTS::NSigCuts];
+    TH2D* hPtDeltaVsFracCut[Const::NDPtCuts];
+    TH2D* hPtDeltaVsFracSig[Const::NSigCuts];
+    TH2D* hPtDeltaVsTrueCut[Const::NDPtCuts];
+    TH2D* hPtDeltaVsTrueSig[Const::NSigCuts];
+    TH2D* hPtDeltaVsTrackCut[Const::NDPtCuts];
+    TH2D* hPtDeltaVsTrackSig[Const::NSigCuts];
+    TH2D* hPtTrueVsTrackCut[Const::NDPtCuts];
+    TH2D* hPtTrueVsTrackSig[Const::NSigCuts];
 
     // projection names
-    TString sPtProj[CONSTANTS::NProj];
+    TString sPtProj[nProj];
 
     // functions
-    TF1* fMuHiProj[CONSTANTS::NSigCuts];
-    TF1* fMuLoProj[CONSTANTS::NSigCuts];
-    TF1 *fPtDeltaProj[CONSTANTS::NProj];
+    TF1* fMuHiProj[Const::NSigCuts];
+    TF1* fMuLoProj[Const::NSigCuts];
+    TF1 *fPtDeltaProj[nProj];
 
     // graphs
     TGraph* grMuProj;
     TGraph* grSigProj;
     TGraph* grRejCut;
     TGraph* grRejSig;
-    TGraph* grMuHiProj[CONSTANTS::NSigCuts];
-    TGraph* grMuLoProj[CONSTANTS::NSigCuts];
+    TGraph* grMuHiProj[Const::NSigCuts];
+    TGraph* grMuLoProj[Const::NSigCuts];
 
 };  // end SDeltaPtCutStudy definition
 
