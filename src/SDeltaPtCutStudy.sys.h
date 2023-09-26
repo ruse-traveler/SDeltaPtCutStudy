@@ -36,6 +36,27 @@ void SDeltaPtCutStudy::InitVectors() {
     sPtProj.push_back("");
   }  // end projection loop
 
+  // initialize flat delta-pt cut-related vectors
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
+
+    // initialize variables for rejection calculation
+    nNormCut.push_back(0.);
+    nWeirdCut.push_back(0.);
+    rejCut.push_back(0.);
+
+    // initialize histograms
+    hPtDeltaProj.push_back(NULL);
+    hPtDeltaCut.push_back(NULL);
+    hPtTrackCut.push_back(NULL);
+    hPtFracCut.push_back(NULL);
+    hPtTrkTruCut.push_back(NULL);
+    hEffCut.push_back(NULL);
+    hPtDeltaVsFracCut.push_back(NULL);
+    hPtDeltaVsTrueCut.push_back(NULL);
+    hPtDeltaVsTrackCut.push_back(NULL);
+    hPtTrueVsTrackCut.push_back(NULL);
+  }
+
   cout << "    Initialized vectors." << endl;
   return;
 
@@ -296,15 +317,15 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // flat delta-pt cut names
-  TString sPtDeltaCut[Const::NDPtCuts];
-  TString sPtTrackCut[Const::NDPtCuts];
-  TString sPtFracCut[Const::NDPtCuts];
-  TString sPtTrkTruCut[Const::NDPtCuts];
-  TString sPtDeltaVsFracCut[Const::NDPtCuts];
-  TString sPtDeltaVsTrueCut[Const::NDPtCuts];
-  TString sPtDeltaVsTrackCut[Const::NDPtCuts];
-  TString sPtTrueVsTrackCut[Const::NDPtCuts];
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  vector<TString> sPtDeltaCut(nDPtCuts);
+  vector<TString> sPtTrackCut(nDPtCuts);
+  vector<TString> sPtFracCut(nDPtCuts);
+  vector<TString> sPtTrkTruCut(nDPtCuts);
+  vector<TString> sPtDeltaVsFracCut(nDPtCuts);
+  vector<TString> sPtDeltaVsTrueCut(nDPtCuts);
+  vector<TString> sPtDeltaVsTrackCut(nDPtCuts);
+  vector<TString> sPtTrueVsTrackCut(nDPtCuts);
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     sPtDeltaCut[iCut]  = "h";
     sPtTrackCut[iCut]  = "h";
     sPtFracCut[iCut]   = "h";
@@ -415,7 +436,7 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // flat delta-pt cut histograms
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     hPtDeltaCut[iCut]  = new TH1D(sPtDeltaCut[iCut].Data(),  "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtTrackCut[iCut]  = new TH1D(sPtTrackCut[iCut].Data(),  "", nPtBins,    rPtBins[0],    rPtBins[1]);
     hPtFracCut[iCut]   = new TH1D(sPtFracCut[iCut].Data(),   "", nFracBins,  rFracBins[0],  rFracBins[1]);

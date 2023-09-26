@@ -140,7 +140,7 @@ void SDeltaPtCutStudy::SetHistBaseNames(const TString sProj, const TString sDelt
        << "      " << sPtTrueBase   << "\n"
        << "      " << sPtRecoBase   << "\n"
        << "      " << sPtFracBase   << "\n"
-       << "      " << sPtTrkTruBase << "\n"
+       << "      " << sPtTrkTruBase
        << endl;
   return;
 
@@ -186,9 +186,40 @@ void SDeltaPtCutStudy::SetProjectionParameters(const vector<tuple<double, TStrin
     fMarProj.push_back(get<3>(param));
     fColFit.push_back(get<4>(param));
   }
+
+  cout << "    Set projection parameters." << endl;
   return;
 
 }  // end 'SetProjectionParameters(vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>>)'
+
+
+
+void SDeltaPtCutStudy::SetFlatCutParameters(const vector<tuple<double, TString, uint32_t, uint32_t, bool>> flatParams) {
+
+  bool   cutSelected = false;
+  size_t iParam      = 0;
+  for (auto param : flatParams) {
+
+    // read in parameters
+    ptDeltaMax.push_back(get<0>(param));
+    sDPtSuffix.push_back(get<1>(param));
+    fColCut.push_back(get<2>(param));
+    fMarCut.push_back(get<3>(param));
+
+    // determine which cut to draw
+    if (!cutSelected && get<4>(param)) {
+      iCutToDraw  = iParam;
+      cutSelected = true;
+    }
+    ++iParam;
+  }
+  cout << "CHECK: iCutToDraw = " << iCutToDraw << endl;
+  nDPtCuts = flatParams.size();
+
+  cout << "    Set flat delta-pt cut parameters." << endl; 
+  return;
+
+}  // end 'SetFlatCutParameters(vector<tuple<double, TString, uint32_t, uint32_t, bool>>)'
 
 
 
@@ -258,7 +289,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save flat delta-pt cut histograms
   dFlatCut -> cd();
   grRejCut -> Write();
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     hEffCut[iCut]            -> Write();
     hPtDeltaCut[iCut]        -> Write();
     hPtTrackCut[iCut]        -> Write();

@@ -27,12 +27,7 @@ using namespace std;
 SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
   // initialize arrays for rejection calculation
-  // [FIXME this will need to go where NDPtCuts and NSigCuts will be set]
-  for (Ssiz_t iCut = 0; iCut < NDPtCuts; iCut++) {
-    nNormCut[iCut]  = 0;
-    nWeirdCut[iCut] = 0;
-    rejCut[iCut]    = 0.;
-  }
+  // [FIXME this will need to go where  NSigCuts will be set]
   for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
     nNormSig[iSig]  = 0;
     nWeirdSig[iSig] = 0;

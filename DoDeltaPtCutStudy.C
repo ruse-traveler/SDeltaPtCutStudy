@@ -58,6 +58,23 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
     make_tuple(40., "_pt40", 819, 20, 813)
   };
 
+  // flat delta-pt cut parameters
+  //   <0> = max delta-pt
+  //   <1> = histogram suffix
+  //   <2> = histogram color
+  //   <3> = histogram marker
+  //   <4> = draw this one?
+  //         (only 1st cut set to true will be drawn)
+  const vector<tuple<double, TString, uint32_t, uint32_t, bool>> flatParams = {
+    make_tuple(0.50, "_dPt50", 899, 24, false),
+    make_tuple(0.25, "_dPt25", 909, 26, false),
+    make_tuple(0.10, "_dPt10", 879, 32, false),
+    make_tuple(0.05, "_dPt05", 889, 25, false),
+    make_tuple(0.03, "_dPt03", 859, 27, true),
+    make_tuple(0.02, "_dPt02", 869, 28, true),
+    make_tuple(0.01, "_dPt01", 839, 30, true)
+  };
+
   // general track cuts
   const uint32_t nInttTrkMin = 1;
   const uint32_t nMVtxTrkMin = 2;
@@ -112,6 +129,7 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   study -> SetPlotText(sPlotTxt);
   study -> SetEffRebinParameters(doEffRebin, nEffRebin);
   study -> SetProjectionParameters(projParams);
+  study -> SetFlatCutParameters(flatParams);
   study -> Init();
   study -> Analyze();
   study -> End();

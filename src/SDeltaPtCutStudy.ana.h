@@ -68,7 +68,7 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
 
     // apply delta-pt cuts
     const Bool_t isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
-    for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+    for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
       const Bool_t isInDeltaPtCut = (ptDelta < ptDeltaMax[iCut]);
       if (isInDeltaPtCut) {
 
@@ -350,7 +350,7 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
   const TString sRejSigBase = "Reject_sigmaCut";
 
   // calculate flat delta-pt rejection factors
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     rejCut[iCut] = (Double_t) nNormCut[iCut] / (Double_t) nWeirdCut[iCut];
   }
   cout << "      Calculated flat delta-pt rejection factors." << endl;
@@ -365,7 +365,7 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
        << endl;
 
   // announce flat delta-pt rejection factors
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     cout << "          n(Norm, Weird) = (" << nNormCut[iCut] << ", " << nWeirdCut[iCut] << "), rejection = " << rejCut[iCut] << endl;
   }
 
@@ -375,13 +375,18 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
     cout << "          n(Norm, Weird) = (" << nNormSig[iSig] << ", " << nWeirdSig[iSig] << "), rejection = " << rejSig[iSig] << endl;
   }
 
-  // make rejection graphs
+  // graph names
   TString sRejCut("gr");
   TString sRejSig("gr");
   sRejCut.Append(sRejCutBase.Data());
   sRejSig.Append(sRejSigBase.Data());
 
-  grRejCut = new TGraph(Const::NDPtCuts, ptDeltaMax, rejCut);
+  // convert vectors to TVectors
+  TVectorD tvecPtDeltaMax(ptDeltaMax.size(), ptDeltaMax.data());
+  TVectorD tvecRejCut(rejCut.size(), rejCut.data());
+
+  // make rejection graphs
+  grRejCut = new TGraph(tvecPtDeltaMax, tvecRejCut);
   grRejSig = new TGraph(Const::NSigCuts, ptDeltaSig, rejSig);
   grRejCut -> SetName(sRejCut.Data());
   grRejSig -> SetName(sRejSig.Data());
@@ -402,7 +407,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   if (doEffRebin) {
     hPtTruth  -> Rebin(nEffRebin);
     hPtTrkTru -> Rebin(nEffRebin);
-    for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+    for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
       hPtTrkTruCut[iCut] -> Rebin(nEffRebin);
     }
     for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
@@ -415,8 +420,8 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   sEff.Append(sEffBase.Data());
 
   // create flat delta-pt cut efficiency names
-  TString sEffCut[Const::NDPtCuts];
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  vector<TString> sEffCut(nDPtCuts);
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     sEffCut[iCut] = "h";
     sEffCut[iCut].Append(sEffBase.Data());
     sEffCut[iCut].Append(sDPtSuffix[iCut].Data());
@@ -436,7 +441,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   hEff -> Divide(hPtTrkTru, hPtTruth, 1., 1.);
 
   // calculate flat delta-pt cut efficiencies
-  for (Ssiz_t iCut = 0; iCut < Const::NDPtCuts; iCut++) {
+  for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
     hEffCut[iCut] = (TH1D*) hPtTruth -> Clone();
     hEffCut[iCut] -> SetName(sEffCut[iCut].Data());
     hEffCut[iCut] -> Reset("ICES");
