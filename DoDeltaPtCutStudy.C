@@ -47,7 +47,7 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   //   <2> = histogram color
   //   <3> = histogram marker
   //   <4> = fit color
-  const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> = {
+  const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams = {
     make_tuple(0.5, "_pt05", 799, 20, 803),
     make_tuple(1.0, "_pt1",  633, 22, 636),
     make_tuple(2.0, "_pt2",  899, 23, 893),
@@ -95,6 +95,7 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   study -> SetGeneralStyleParameters(arrColGraph, arrMarGraph);
   study -> SetGeneralHistParameters(fFil, fLin, fWid, fTxt, fAln, fCnt);
   study -> SetEffRebinParameters(doEffRebin, nEffRebin);
+  study -> SetProjectionParameters(projParams);
   study -> Init();
   study -> Analyze();
   study -> End();

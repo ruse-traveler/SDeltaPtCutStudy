@@ -17,6 +17,31 @@ using namespace std;
 
 // system methods -------------------------------------------------------------
 
+void SDeltaPtCutStudy::InitVectors() {
+
+  // initialize projection-related vectors
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
+
+    // initialize variables for sigma calculation
+    muProj.push_back(0.);
+    sigProj.push_back(0.);
+    for (size_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+      muHiProj[iSig].push_back(0.);
+      muLoProj[iSig].push_back(0.);
+    }
+
+    // initialize histograms, functions, and strings
+    hPtDeltaProj.push_back(NULL);
+    fPtDeltaProj.push_back(NULL); 
+    sPtProj.push_back("");
+  }  // end projection loop
+
+  cout << "    Initialized vectors." << endl;
+  return;
+
+}  // end 'InitVectors()'
+
+
 void SDeltaPtCutStudy::InitTuples() {
 
   // set track branch addresses
@@ -271,7 +296,7 @@ void SDeltaPtCutStudy::InitHists() {
   sPtTrueVsTrack.Append(sPtRecoBase.Data());
 
   // delta-pt projection names
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     sPtProj[iProj] = "h";
     sPtProj[iProj].Append(sPtProjBase.Data());
     sPtProj[iProj].Append(sProjSuffix[iProj].Data());
@@ -391,7 +416,7 @@ void SDeltaPtCutStudy::InitHists() {
   hPtTrueVsTrack  -> Sumw2();
 
   // delta-pt projection histograms
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     hPtDeltaProj[iProj] = new TH1D(sPtProj[iProj].Data(), "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtDeltaProj[iProj] -> Sumw2();
   }

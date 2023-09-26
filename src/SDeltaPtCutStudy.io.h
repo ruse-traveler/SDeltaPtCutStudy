@@ -142,8 +142,8 @@ void SDeltaPtCutStudy::SetEffRebinParameters(const bool doRebin, const size_t nR
 
 void SDeltaPtCutStudy::SetProjectionParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams) {
 
-  nProj = projPars.size();
-  for (auto param : projPars) {
+  nProj = projParams.size();
+  for (auto param : projParams) {
     ptProj.push_back(get<0>(param));
     sProjSuffix.push_back(get<1>(param));
     fColProj.push_back(get<2>(param));
@@ -253,7 +253,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   dProject  -> cd();
   grMuProj  -> Write();
   grSigProj -> Write();
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     hPtDeltaProj[iProj] -> Write();
     fPtDeltaProj[iProj] -> Write();
   }

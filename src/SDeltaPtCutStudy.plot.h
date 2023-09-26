@@ -405,7 +405,7 @@ void SDeltaPtCutStudy::SetStyles() {
   grSigProj -> GetYaxis() -> SetLabelFont(fTxt);
   grSigProj -> GetYaxis() -> SetLabelSize(fLab[1]);
   grSigProj -> GetYaxis() -> CenterTitle(fCnt);
-  for (Ssiz_t iProj = 0; iProj < NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     hPtDeltaProj[iProj] -> SetMarkerColor(fColProj[iProj]);
     hPtDeltaProj[iProj] -> SetMarkerStyle(fMarProj[iProj]);
     hPtDeltaProj[iProj] -> SetFillColor(fColProj[iProj]);
@@ -1007,7 +1007,7 @@ void SDeltaPtCutStudy::MakePlots() {
     "100 #pi^{-}/event, p_{T} #in (20, 40) GeV/c",
     "#bf{Only #pi^{-}}"
   };
-  const TString sLegProj[Const::NProj] = {
+  const TString sLegProj[nProj] = {
     "p_{T}^{reco} = 0.5 GeV/c",
     "p_{T}^{reco} = 1 GeV/c",
     "p_{T}^{reco} = 2 GeV/c",
@@ -1057,14 +1057,14 @@ void SDeltaPtCutStudy::MakePlots() {
   };
 
   // make legends
-  const UInt_t  fColLe                     = 0;
-  const UInt_t  fFilLe                     = 0;
-  const UInt_t  fLinLe                     = 0;
-  const Float_t yObjLe                     = 0.1 + ((Const::NDPtCuts + 2) * 0.05);
-  const Float_t yObjMu                     = 0.1 + ((Const::NSigCuts + 1) * 0.05);
-  const Float_t yObjDel                    = 0.1 + (Const::NSigCuts * 0.05);
-  const Float_t yObjPro                    = 0.1 + (Const::NProj * 0.05);
-  const Float_t yObjSig                    = 0.1 + ((Const::NSigCuts + 2) * 0.05);
+  const UInt_t  fColLe                 = 0;
+  const UInt_t  fFilLe                 = 0;
+  const UInt_t  fLinLe                 = 0;
+  const Float_t yObjLe                 = 0.1 + ((Const::NDPtCuts + 2) * 0.05);
+  const Float_t yObjMu                 = 0.1 + ((Const::NSigCuts + 1) * 0.05);
+  const Float_t yObjDel                = 0.1 + (Const::NSigCuts * 0.05);
+  const Float_t yObjPro                = 0.1 + (nProj * 0.05);
+  const Float_t yObjSig                = 0.1 + ((Const::NSigCuts + 2) * 0.05);
   const Float_t fLegXY[Const::NVtx]    = {0.1, 0.1, 0.3, yObjLe};
   const Float_t fLegMuXY[Const::NVtx]  = {0.1, 0.1, 0.3, yObjMu};
   const Float_t fLegDelXY[Const::NVtx] = {0.1, 0.1, 0.3, yObjDel};
@@ -1114,7 +1114,7 @@ void SDeltaPtCutStudy::MakePlots() {
   legPro -> SetLineStyle(fLinLe);
   legPro -> SetTextFont(fTxt);
   legPro -> SetTextAlign(fAln);
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     legPro -> AddEntry(hPtDeltaProj[iProj], sLegProj[iProj].Data(), "pf");
   }
 
@@ -1474,7 +1474,7 @@ void SDeltaPtCutStudy::MakePlots() {
   pProject        -> cd();
   hPtDeltaProj[0] -> Draw();
   fPtDeltaProj[0] -> Draw("same");
-  for (Ssiz_t iProj = 1; iProj < NProj; iProj++) {
+  for (size_t iProj = 1; iProj < nProj; iProj++) {
     hPtDeltaProj[iProj] -> Draw("same");
     fPtDeltaProj[iProj] -> Draw("same");
   }

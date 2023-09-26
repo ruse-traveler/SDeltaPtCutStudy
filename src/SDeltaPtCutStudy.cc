@@ -26,19 +26,6 @@ using namespace std;
 
 SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
-  // initialize arrays for sigma calculation
-  // [FIXME this will need to go wherever NProj and NSigCuts will be set]
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
-    muProj[iProj]  = 0.;
-    sigProj[iProj] = 0.;
-  }
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
-    for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
-      muHiProj[iSig][iProj] = 0.;
-      muLoProj[iSig][iProj] = 0.;
-    }
-  }
-
   // initialize arrays for rejection calculation
   // [FIXME this will need to go where NDPtCuts and NSigCuts will be set]
   for (Ssiz_t iCut = 0; iCut < NDPtCuts; iCut++) {
@@ -51,7 +38,7 @@ SDeltaPtCutStudy::SDeltaPtCutStudy() {
     nWeirdSig[iSig] = 0;
     rejSig[iSig]    = 0.;
   }
-  cout << "\n  Beginning delta-pt cut study..." << endl;
+  cout << "\n  Beginning delta-pt cut study..."  << endl;
 
 }  // end ctor
 
@@ -77,7 +64,8 @@ void SDeltaPtCutStudy::Init() {
   OpenFiles();
   GetTuples();
 
-  // initialize input/output
+  // initialize internal vectors & input/output
+  InitVectors();
   InitTuples();
   InitHists();
   return;

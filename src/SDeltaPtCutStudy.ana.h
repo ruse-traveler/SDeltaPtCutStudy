@@ -222,8 +222,8 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   const TString sMuBase   = "ProjectionMean";
 
   // projection fit names
-  TString sFitProj[Const::NProj];
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  TString sFitProj[nProj];
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
     sFitProj[iProj] = "f";
     sFitProj[iProj].Append(sPtProjBase.Data());
     sFitProj[iProj].Append(sProjSuffix[iProj].Data());
@@ -232,7 +232,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   // project slices of delta-pt and get sigmas
   const UInt_t fWidFit = 2;
   const UInt_t fLinFit = 1;
-  for (Ssiz_t iProj = 0; iProj < Const::NProj; iProj++) {
+  for (size_t iProj = 0; iProj < nProj; iProj++) {
 
     // do projection
     const UInt_t iBinProj = hPtDeltaVsTrack -> GetXaxis() -> FindBin(ptProj[iProj]);
@@ -288,18 +288,30 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
     sFnMuLoProj[iSig].Append(sSigSuffix[iSig].Data());
   }
 
+  // turn std::vectors into TVectors
+  TVectorD tvecPtProj(ptProj.size(), ptProj.data());
+  TVectorD tvecMuProj(muProj.size(), muProj.data());
+  TVectorD tvecSigProj(sigProj.size(), sigProj.data());
+
+  vector<TVectorD> tvecMuHiProj;
+  vector<TVectorD> tvecMuLoProj;
+  for (size_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+    tvecMuHiProj.push_back(TVectorD(muHiProj[iSig].size(), muHiProj[iSig].data()));
+    tvecMuLoProj.push_back(TVectorD(muLoProj[iSig].size(), muLoProj[iSig].data()));
+  }
+
   // construct sigma graphs
-  grMuProj  = new TGraph(Const::NProj, ptProj, muProj);
-  grSigProj = new TGraph(Const::NProj, ptProj, sigProj);
+  grMuProj  = new TGraph(tvecPtProj, tvecMuProj);
+  grSigProj = new TGraph(tvecPtProj, tvecSigProj);
   grMuProj  -> SetName(sMuProj);
   grSigProj -> SetName(sSigProj);
 
   // fit sigma graphs
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
 
     // create graphs
-    grMuHiProj[iSig] = new TGraph(NProj, ptProj, muHiProj[iSig]);
-    grMuLoProj[iSig] = new TGraph(NProj, ptProj, muLoProj[iSig]);
+    grMuHiProj[iSig] = new TGraph(tvecPtProj, tvecMuHiProj[iSig]);
+    grMuLoProj[iSig] = new TGraph(tvecPtProj, tvecMuLoProj[iSig]);
     grMuHiProj[iSig] -> SetName(sGrMuHiProj[iSig].Data());
     grMuLoProj[iSig] -> SetName(sGrMuLoProj[iSig].Data());
 
