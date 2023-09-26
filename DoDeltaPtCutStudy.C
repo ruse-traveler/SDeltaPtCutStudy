@@ -57,7 +57,6 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
     make_tuple(30., "_pt30", 839, 47, 843),
     make_tuple(40., "_pt40", 819, 20, 813)
   };
-  const TString sPtProjBase("DeltaPtProj");
 
   // general track cuts
   const uint32_t nInttTrkMin = 1;
@@ -82,6 +81,21 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   const uint32_t fAln = 12;
   const uint32_t fCnt = 1;
 
+  // bases of histogram names
+  const TString sPtProjBase("DeltaPtProj");
+  const TString sPtDeltaBase("DeltaPt");
+  const TString sPtTrueBase("PtTrue");
+  const TString sPtRecoBase("PtReco");
+  const TString sPtFracBase("PtFrac");
+  const TString sPtTrkTruBase("PtTrkTruth");
+
+  // plot text
+  const vector<TString> sPlotTxt = {
+    "#bf{#it{sPHENIX}} Simulation",
+    "100 #pi^{-}/event, p_{T} #in (20, 40) GeV/c",
+    "#bf{Only #pi^{-}}"
+  };
+
   // misc plot parameters
   bool   doEffRebin = true;
   size_t nEffRebin  = 5;
@@ -94,6 +108,8 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   study -> SetPlotRanges(rPtRange, rFracRange, rDeltaRange);
   study -> SetGeneralStyleParameters(arrColGraph, arrMarGraph);
   study -> SetGeneralHistParameters(fFil, fLin, fWid, fTxt, fAln, fCnt);
+  study -> SetHistBaseNames(sPtProjBase, sPtDeltaBase, sPtTrueBase, sPtRecoBase, sPtFracBase, sPtTrkTruBase);
+  study -> SetPlotText(sPlotTxt);
   study -> SetEffRebinParameters(doEffRebin, nEffRebin);
   study -> SetProjectionParameters(projParams);
   study -> Init();

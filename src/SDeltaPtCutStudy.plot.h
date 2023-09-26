@@ -1002,11 +1002,6 @@ void SDeltaPtCutStudy::MakePlots() {
   const TString sLegTrue("truth");
   const TString sLegTrack("tracks (w/ cuts)");
   const TString sLegMu("Mean #Deltap_{T} / p_{T}^{reco} (n = 0)");
-  const TString sInfo[Const::NTxt] = {
-    "#bf{#it{sPHENIX}} Simulation",
-    "100 #pi^{-}/event, p_{T} #in (20, 40) GeV/c",
-    "#bf{Only #pi^{-}}"
-  };
   const TString sLegProj[nProj] = {
     "p_{T}^{reco} = 0.5 GeV/c",
     "p_{T}^{reco} = 1 GeV/c",
@@ -1136,7 +1131,7 @@ void SDeltaPtCutStudy::MakePlots() {
   const UInt_t  fColInf                 = 0;
   const UInt_t  fFilInf                 = 0;
   const UInt_t  fLinInf                 = 0;
-  const Float_t yObjInf                 = 0.1 + (Const::NTxt * 0.05);
+  const Float_t yObjInf                 = 0.1 + (nTxt * 0.05);
   const Float_t yObjCut                 = 0.1 + (Const::NTrkCuts * 0.05);
   const Float_t fInfXY[Const::NVtx] = {0.3, 0.1, 0.5, yObjInf};
   const Float_t fCutXY[Const::NVtx] = {0.5, 0.1, 0.7, yObjCut};
@@ -1148,7 +1143,7 @@ void SDeltaPtCutStudy::MakePlots() {
   info -> SetLineStyle(fLinInf);
   info -> SetTextFont(fTxt);
   info -> SetTextAlign(fAln);
-  for (Ssiz_t iTxt = 0; iTxt < Const::NTxt; iTxt++) {
+  for (size_t iTxt = 0; iTxt < nTxt; iTxt++) {
     info -> AddText(sInfo[iTxt].Data());
   }
 

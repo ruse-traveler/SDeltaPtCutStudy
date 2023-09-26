@@ -259,13 +259,6 @@ void SDeltaPtCutStudy::InitHists() {
   const Float_t rFracBins[Const::NRange]  = {0., 10.};
   const Float_t rDeltaBins[Const::NRange] = {0., 5.};
 
-  // histogram names
-  const TString sPtTrueBase   = "PtTrue";
-  const TString sPtRecoBase   = "PtReco";
-  const TString sPtFracBase   = "PtFrac";
-  const TString sPtDeltaBase  = "DeltaPt";
-  const TString sPtTrkTruBase = "PtTrkTruth";
-
   // create names
   TString sPtTruth("h");
   TString sPtDelta("h");

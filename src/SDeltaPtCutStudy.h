@@ -47,7 +47,6 @@ class SDeltaPtCutStudy {
 
   // constants
   enum Const {
-    NTxt     = 3,
     NPad     = 2,
     NPar     = 3,
     NVtx     = 4,
@@ -76,6 +75,8 @@ class SDeltaPtCutStudy {
     void SetPlotRanges(const pair<float, float> ptRange, const pair<float, float> fracRange, const pair<float, float> deltaRange);
     void SetGeneralStyleParameters(const array<uint32_t, Const::NTypes> arrCol, const array<uint32_t, Const::NTypes> arrMar);
     void SetGeneralHistParameters(const uint32_t fill, const uint32_t line, const uint32_t width, const uint32_t font, const uint32_t align, const uint32_t center);
+    void SetHistBaseNames(const TString sProj, const TString sDelta, const TString sTrue, const TString sReco, const TString sFrac, const TString sTrack);
+    void SetPlotText(const vector<TString> plotText);
     void SetEffRebinParameters(const bool doRebin, const size_t nRebin = 2);
     void SetProjectionParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams);
 
@@ -139,7 +140,6 @@ class SDeltaPtCutStudy {
 
     // projection parameters
     size_t           nProj       = 0;
-    TString          sPtProjBase = "DeltaPtProj";
     vector<double>   ptProj;
     vector<TString>  sProjSuffix;
     vector<uint32_t> fColProj;
@@ -163,6 +163,18 @@ class SDeltaPtCutStudy {
       "_sigDPt25",
       "_sigDPt3"
     };
+
+    // histogram base names
+    TString sPtProjBase   = "DeltaPtProj";
+    TString sPtDeltaBase  = "DeltaPt";
+    TString sPtTrueBase   = "PtTrue";
+    TString sPtRecoBase   = "PtReco";
+    TString sPtFracBase   = "PtFrac";
+    TString sPtTrkTruBase = "PtTrkTruth";
+
+    // plot text
+    size_t          nTxt = 0;
+    vector<TString> sInfo;
 
     // plot range parameters
     float rPtRange[Const::NRange]    = {0., 60.};

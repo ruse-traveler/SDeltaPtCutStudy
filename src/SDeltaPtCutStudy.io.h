@@ -126,6 +126,42 @@ void SDeltaPtCutStudy::SetGeneralHistParameters(const uint32_t fill, const uint3
 
 
 
+void SDeltaPtCutStudy::SetHistBaseNames(const TString sProj, const TString sDelta, const TString sTrue, const TString sReco, const TString sFrac, const TString sTrack) {
+
+  sPtProjBase   = sProj;
+  sPtDeltaBase  = sDelta;
+  sPtTrueBase   = sTrue;
+  sPtRecoBase   = sReco;
+  sPtFracBase   = sFrac;
+  sPtTrkTruBase = sTrack;
+  cout << "    Set histogram base names:\n"
+       << "      " << sPtProjBase   << "\n"
+       << "      " << sPtDeltaBase  << "\n"
+       << "      " << sPtTrueBase   << "\n"
+       << "      " << sPtRecoBase   << "\n"
+       << "      " << sPtFracBase   << "\n"
+       << "      " << sPtTrkTruBase << "\n"
+       << endl;
+  return;
+
+}  // end 'SetHistBaseNames(TString, TString, TString, TString, TString, TString)'
+
+
+
+void SDeltaPtCutStudy::SetPlotText(const vector<TString> plotText) {
+
+  nTxt  = plotText.size();
+  sInfo = plotText;
+
+  cout << "    Set plot text:" << endl;
+  for (size_t iTxt = 0; iTxt < nTxt; iTxt++) {
+    cout << "      " << sInfo[iTxt] << endl;
+  }
+  return;
+
+}  // end 'SetPlotText(vector<TString>)'
+
+
 void SDeltaPtCutStudy::SetEffRebinParameters(const bool doRebin, const size_t nRebin) {
 
   doEffRebin = doRebin;
