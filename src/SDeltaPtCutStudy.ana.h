@@ -43,17 +43,17 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
     }
 
     // do calculations
-    const Double_t ptFrac  = trk_pt / trk_gpt;
-    const Double_t ptDelta = trk_deltapt / trk_pt;
+    const double ptFrac  = trk_pt / trk_gpt;
+    const double ptDelta = trk_deltapt / trk_pt;
 
     // apply trk cuts
-    const Bool_t isInZVtxCut = (abs(trk_vz) <  vzTrkMax);
-    const Bool_t isInInttCut = (trk_nintt   >= nInttTrkMin);
-    const Bool_t isInMVtxCut = (trk_nlmaps  >  nMVtxTrkMin);
-    const Bool_t isInTpcCut  = (trk_ntpc    >  nTpcTrkMin);
-    const Bool_t isInPtCut   = (trk_pt      >  ptTrkMin);
-    const Bool_t isInQualCut = (trk_quality <  qualTrkMax);
-    const Bool_t isGoodTrk   = (isInZVtxCut && isInInttCut && isInMVtxCut && isInTpcCut && isInPtCut && isInQualCut);
+    const bool isInZVtxCut = (abs(trk_vz) <  vzTrkMax);
+    const bool isInInttCut = (trk_nintt   >= nInttTrkMin);
+    const bool isInMVtxCut = (trk_nlmaps  >  nMVtxTrkMin);
+    const bool isInTpcCut  = (trk_ntpc    >  nTpcTrkMin);
+    const bool isInPtCut   = (trk_pt      >  ptTrkMin);
+    const bool isInQualCut = (trk_quality <  qualTrkMax);
+    const bool isGoodTrk   = (isInZVtxCut && isInInttCut && isInMVtxCut && isInTpcCut && isInPtCut && isInQualCut);
     if (!isGoodTrk) continue;
 
     // fill histograms
@@ -67,9 +67,9 @@ void SDeltaPtCutStudy::ApplyFlatDeltaPtCuts() {
     hPtTrueVsTrack  -> Fill(trk_pt,  trk_gpt);
 
     // apply delta-pt cuts
-    const Bool_t isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
+    const bool isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
     for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
-      const Bool_t isInDeltaPtCut = (ptDelta < ptDeltaMax[iCut]);
+      const bool isInDeltaPtCut = (ptDelta < ptDeltaMax[iCut]);
       if (isInDeltaPtCut) {
 
         // fill histograms
@@ -125,28 +125,28 @@ void SDeltaPtCutStudy::ApplyPtDependentDeltaPtCuts() {
     }
 
     // do calculations
-    const Double_t ptFrac  = trk_pt / trk_gpt;
-    const Double_t ptDelta = trk_deltapt / trk_pt;
+    const double ptFrac  = trk_pt / trk_gpt;
+    const double ptDelta = trk_deltapt / trk_pt;
 
     // apply trk cuts
-    const Bool_t isInZVtxCut = (abs(trk_vz) <  vzTrkMax);
-    const Bool_t isInInttCut = (trk_nintt   >= nInttTrkMin);
-    const Bool_t isInMVtxCut = (trk_nlmaps  >  nMVtxTrkMin);
-    const Bool_t isInTpcCut  = (trk_ntpc    >  nTpcTrkMin);
-    const Bool_t isInPtCut   = (trk_pt      >  ptTrkMin);
-    const Bool_t isInQualCut = (trk_quality <  qualTrkMax);
-    const Bool_t isGoodTrk   = (isInZVtxCut && isInInttCut && isInMVtxCut && isInTpcCut && isInPtCut && isInQualCut);
+    const bool isInZVtxCut = (abs(trk_vz) <  vzTrkMax);
+    const bool isInInttCut = (trk_nintt   >= nInttTrkMin);
+    const bool isInMVtxCut = (trk_nlmaps  >  nMVtxTrkMin);
+    const bool isInTpcCut  = (trk_ntpc    >  nTpcTrkMin);
+    const bool isInPtCut   = (trk_pt      >  ptTrkMin);
+    const bool isInQualCut = (trk_quality <  qualTrkMax);
+    const bool isGoodTrk   = (isInZVtxCut && isInInttCut && isInMVtxCut && isInTpcCut && isInPtCut && isInQualCut);
     if (!isGoodTrk) continue;
 
     // apply delta-pt cuts
-    const Bool_t isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
-    for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+    const bool isNormalTrk = ((ptFrac > normRange[0]) && (ptFrac < normRange[1]));
+    for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
 
       // get bounds
-      const Float_t ptDeltaMin = fMuLoProj[iSig] -> Eval(trk_pt);
-      const Float_t ptDeltaMax = fMuHiProj[iSig] -> Eval(trk_pt);
+      const float ptDeltaMin = fMuLoProj[iSig] -> Eval(trk_pt);
+      const float ptDeltaMax = fMuHiProj[iSig] -> Eval(trk_pt);
 
-      const Bool_t isInDeltaPtSigma = ((ptDelta >= ptDeltaMin) && (ptDelta <= ptDeltaMax));
+      const bool isInDeltaPtSigma = ((ptDelta >= ptDeltaMin) && (ptDelta <= ptDeltaMax));
       if (isInDeltaPtSigma) {
 
         // fill histograms
@@ -202,7 +202,7 @@ void SDeltaPtCutStudy::FillTruthHistograms() {
     }
 
     // fill truth histogram
-    const Bool_t isPrimary = (tru_gprimary == 1);
+    const bool isPrimary = (tru_gprimary == 1);
     if (isPrimary) {
       hPtTruth -> Fill(tru_gpt);
     }
@@ -222,7 +222,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   const TString sMuBase   = "ProjectionMean";
 
   // projection fit names
-  TString sFitProj[nProj];
+  vector<TString> sFitProj(nProj);
   for (size_t iProj = 0; iProj < nProj; iProj++) {
     sFitProj[iProj] = "f";
     sFitProj[iProj].Append(sPtProjBase.Data());
@@ -230,18 +230,18 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   }
 
   // project slices of delta-pt and get sigmas
-  const UInt_t fWidFit = 2;
-  const UInt_t fLinFit = 1;
+  const uint32_t fWidFit = 2;
+  const uint32_t fLinFit = 1;
   for (size_t iProj = 0; iProj < nProj; iProj++) {
 
     // do projection
-    const UInt_t iBinProj = hPtDeltaVsTrack -> GetXaxis() -> FindBin(ptProj[iProj]);
+    const uint32_t iBinProj = hPtDeltaVsTrack -> GetXaxis() -> FindBin(ptProj[iProj]);
     hPtDeltaProj[iProj]   = hPtDeltaVsTrack -> ProjectionY(sPtProj[iProj], iBinProj, iBinProj, "");
 
     // get initial values for fit
-    const Float_t ampGuess = hPtDeltaProj[iProj] -> GetMaximum();
-    const Float_t muGuess  = hPtDeltaProj[iProj] -> GetMean();
-    const Float_t sigGuess = hPtDeltaProj[iProj] -> GetRMS();
+    const float ampGuess = hPtDeltaProj[iProj] -> GetMaximum();
+    const float muGuess  = hPtDeltaProj[iProj] -> GetMean();
+    const float sigGuess = hPtDeltaProj[iProj] -> GetRMS();
 
     // fit with gaussian
     fPtDeltaProj[iProj] = new TF1(sFitProj[iProj].Data(), "gaus", deltaFitRange[0], deltaFitRange[1]);
@@ -256,7 +256,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
     // add values to arrays
     muProj[iProj]  = fPtDeltaProj[iProj] -> GetParameter(1);
     sigProj[iProj] = fPtDeltaProj[iProj] -> GetParameter(2);
-    for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+    for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
       muHiProj[iSig][iProj] = muProj[iProj] + (ptDeltaSig[iSig] * sigProj[iProj]);
       muLoProj[iSig][iProj] = muProj[iProj] - (ptDeltaSig[iSig] * sigProj[iProj]);
     }
@@ -269,11 +269,11 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   sMuProj.Append(sMuBase.Data());
   sSigProj.Append(sSigBase.Data());
 
-  TString sGrMuHiProj[Const::NSigCuts];
-  TString sGrMuLoProj[Const::NSigCuts];
-  TString sFnMuHiProj[Const::NSigCuts];
-  TString sFnMuLoProj[Const::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  vector<TString> sGrMuHiProj(nSigCuts);
+  vector<TString> sGrMuLoProj(nSigCuts);
+  vector<TString> sFnMuHiProj(nSigCuts);
+  vector<TString> sFnMuLoProj(nSigCuts);
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     sGrMuHiProj[iSig] = "gr";
     sGrMuLoProj[iSig] = "gr";
     sFnMuHiProj[iSig] = "f";
@@ -295,7 +295,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
 
   vector<TVectorD> tvecMuHiProj;
   vector<TVectorD> tvecMuLoProj;
-  for (size_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     tvecMuHiProj.push_back(TVectorD(muHiProj[iSig].size(), muHiProj[iSig].data()));
     tvecMuLoProj.push_back(TVectorD(muLoProj[iSig].size(), muLoProj[iSig].data()));
   }
@@ -307,7 +307,7 @@ void SDeltaPtCutStudy::CreateSigmaGraphs() {
   grSigProj -> SetName(sSigProj);
 
   // fit sigma graphs
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
 
     // create graphs
     grMuHiProj[iSig] = new TGraph(tvecPtProj, tvecMuHiProj[iSig]);
@@ -351,13 +351,13 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
 
   // calculate flat delta-pt rejection factors
   for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
-    rejCut[iCut] = (Double_t) nNormCut[iCut] / (Double_t) nWeirdCut[iCut];
+    rejCut[iCut] = (double) nNormCut[iCut] / (double) nWeirdCut[iCut];
   }
   cout << "      Calculated flat delta-pt rejection factors." << endl;
 
   // calculate pt-dependent delta-pt rejection factors
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
-    rejSig[iSig] = (Double_t) nNormSig[iSig] / (Double_t) nWeirdSig[iSig];
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
+    rejSig[iSig] = (double) nNormSig[iSig] / (double) nWeirdSig[iSig];
   }
   cout << "      Calculated pt-depdendent delta-pt rejection factors\n"
        << "      Rejection factors:\n"
@@ -371,7 +371,7 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
 
   // announce pt-dependent delta-pt rejection factors
   cout << "        Pt-dependent delta-pt cuts" << endl;
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     cout << "          n(Norm, Weird) = (" << nNormSig[iSig] << ", " << nWeirdSig[iSig] << "), rejection = " << rejSig[iSig] << endl;
   }
 
@@ -383,11 +383,13 @@ void SDeltaPtCutStudy::CalculateRejectionFactors() {
 
   // convert vectors to TVectors
   TVectorD tvecPtDeltaMax(ptDeltaMax.size(), ptDeltaMax.data());
+  TVectorD tvecPtDeltaSig(ptDeltaSig.size(), ptDeltaSig.data());
   TVectorD tvecRejCut(rejCut.size(), rejCut.data());
+  TVectorD tvecRejSig(rejSig.size(), rejSig.data());
 
   // make rejection graphs
   grRejCut = new TGraph(tvecPtDeltaMax, tvecRejCut);
-  grRejSig = new TGraph(Const::NSigCuts, ptDeltaSig, rejSig);
+  grRejSig = new TGraph(tvecPtDeltaSig, tvecRejSig);
   grRejCut -> SetName(sRejCut.Data());
   grRejSig -> SetName(sRejSig.Data());
 
@@ -410,7 +412,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
     for (size_t iCut = 0; iCut < nDPtCuts; iCut++) {
       hPtTrkTruCut[iCut] -> Rebin(nEffRebin);
     }
-    for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+    for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
       hPtTrkTruSig[iSig] -> Rebin(nEffRebin);
     }
     cout << "      Rebinned efficiency histograms." << endl;
@@ -428,8 +430,8 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   }
 
   // create pt-dependent delta-pt cut efficiency names
-  TString sEffSig[Const::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  vector<TString> sEffSig(nSigCuts);
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     sEffSig[iSig] = "h";
     sEffSig[iSig].Append(sEffBase.Data());
     sEffSig[iSig].Append(sSigSuffix[iSig].Data());
@@ -449,7 +451,7 @@ void SDeltaPtCutStudy::CalculateEfficiencies() {
   }
 
   // calculate pt-dependent delta-pt cut efficiencies
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hEffSig[iSig] = (TH1D*) hPtTruth -> Clone();
     hEffSig[iSig] -> SetName(sEffSig[iSig].Data());
     hEffSig[iSig] -> Reset("ICES");

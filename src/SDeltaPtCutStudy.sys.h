@@ -25,10 +25,6 @@ void SDeltaPtCutStudy::InitVectors() {
     // initialize variables for sigma calculation
     muProj.push_back(0.);
     sigProj.push_back(0.);
-    for (size_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
-      muHiProj[iSig].push_back(0.);
-      muLoProj[iSig].push_back(0.);
-    }
 
     // initialize histograms, functions, and strings
     hPtDeltaProj.push_back(NULL);
@@ -55,6 +51,39 @@ void SDeltaPtCutStudy::InitVectors() {
     hPtDeltaVsTrueCut.push_back(NULL);
     hPtDeltaVsTrackCut.push_back(NULL);
     hPtTrueVsTrackCut.push_back(NULL);
+  }
+
+  // initialize pt-dependent delta-pt cut-related vectors
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
+
+    // initialize variables for rejection calculation
+    nNormSig.push_back(0.);
+    nWeirdSig.push_back(0.);
+    rejSig.push_back(0.);
+
+    // initialize variables for sigma calculation
+    vector<double> vecHiProj(nProj, 0.);
+    vector<double> vecLoProj(nProj, 0.);
+    muHiProj.push_back(vecHiProj);
+    muLoProj.push_back(vecLoProj);
+
+    // initialize histograms
+    hPtDeltaSig.push_back(NULL);
+    hPtTrackSig.push_back(NULL);
+    hPtFracSig.push_back(NULL);
+    hPtTrkTruSig.push_back(NULL);
+    hEffSig.push_back(NULL);
+    hPtDeltaVsFracSig.push_back(NULL);
+    hPtDeltaVsTrueSig.push_back(NULL);
+    hPtDeltaVsTrackSig.push_back(NULL);
+    hPtTrueVsTrackSig.push_back(NULL);
+
+    // initialze functions and graphs
+    fPtDeltaProj.push_back(NULL);
+    fMuHiProj.push_back(NULL);
+    fMuLoProj.push_back(NULL);
+    grMuHiProj.push_back(NULL);
+    grMuLoProj.push_back(NULL);
   }
 
   cout << "    Initialized vectors." << endl;
@@ -273,12 +302,12 @@ void SDeltaPtCutStudy::InitTuples() {
 void SDeltaPtCutStudy::InitHists() {
 
   // histogram binning
-  const UInt_t  nPtBins(1000);
-  const UInt_t  nFracBins(1000);
-  const UInt_t  nDeltaBins(5000);
-  const Float_t rPtBins[Const::NRange]    = {0., 100.};
-  const Float_t rFracBins[Const::NRange]  = {0., 10.};
-  const Float_t rDeltaBins[Const::NRange] = {0., 5.};
+  const uint64_t nPtBins(1000);
+  const uint64_t nFracBins(1000);
+  const uint64_t nDeltaBins(5000);
+  const float    rPtBins[Const::NRange]    = {0., 100.};
+  const float    rFracBins[Const::NRange]  = {0., 10.};
+  const float    rDeltaBins[Const::NRange] = {0., 5.};
 
   // create names
   TString sPtTruth("h");
@@ -363,15 +392,15 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // pt-dependent delta-pt cut names
-  TString sPtDeltaSig[Const::NSigCuts];
-  TString sPtTrackSig[Const::NSigCuts];
-  TString sPtFracSig[Const::NSigCuts];
-  TString sPtTrkTruSig[Const::NSigCuts];
-  TString sPtDeltaVsFracSig[Const::NSigCuts];
-  TString sPtDeltaVsTrueSig[Const::NSigCuts];
-  TString sPtDeltaVsTrackSig[Const::NSigCuts];
-  TString sPtTrueVsTrackSig[Const::NSigCuts];
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  vector<TString> sPtDeltaSig(nSigCuts);
+  vector<TString> sPtTrackSig(nSigCuts);
+  vector<TString> sPtFracSig(nSigCuts);
+  vector<TString> sPtTrkTruSig(nSigCuts);
+  vector<TString> sPtDeltaVsFracSig(nSigCuts);
+  vector<TString> sPtDeltaVsTrueSig(nSigCuts);
+  vector<TString> sPtDeltaVsTrackSig(nSigCuts);
+  vector<TString> sPtTrueVsTrackSig(nSigCuts);
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     sPtDeltaSig[iSig]  = "h";
     sPtTrackSig[iSig]  = "h";
     sPtFracSig[iSig]   = "h";
@@ -457,7 +486,7 @@ void SDeltaPtCutStudy::InitHists() {
   }
 
   // pt-dependent delta-pt cut histograms
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hPtDeltaSig[iSig]  = new TH1D(sPtDeltaSig[iSig].Data(),  "", nDeltaBins, rDeltaBins[0], rDeltaBins[1]);
     hPtTrackSig[iSig]  = new TH1D(sPtTrackSig[iSig].Data(),  "", nPtBins,    rPtBins[0],    rPtBins[1]);
     hPtFracSig[iSig]   = new TH1D(sPtFracSig[iSig].Data(),   "", nFracBins,  rFracBins[0],  rFracBins[1]);

@@ -52,8 +52,7 @@ class SDeltaPtCutStudy {
     NVtx     = 4,
     NRange   = 2,
     NTypes   = 3,
-    NTrkCuts = 6,
-    NSigCuts = 5
+    NTrkCuts = 6
   };
 
   public:
@@ -79,6 +78,7 @@ class SDeltaPtCutStudy {
     void SetEffRebinParameters(const bool doRebin, const size_t nRebin = 2);
     void SetProjectionParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t>> projParams);
     void SetFlatCutParameters(const vector<tuple<double, TString, uint32_t, uint32_t, bool>> flatParams);
+    void SetPtDependCutParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t, bool>> ptDependParams);
 
   private:
 
@@ -124,11 +124,7 @@ class SDeltaPtCutStudy {
     double   ptTrkMin    = 0.1;
 
     // delta-pt/pt cut parameters
-    double ptDeltaSig[Const::NSigCuts] = {1.,  1.5,  2.,  2.5,  3.};
     double normRange[Const::NRange]    = {0.2, 1.2};
-
-    // plot parameters [FIXME these should be user configurable]
-    size_t iSigToDraw = Const::NSigCuts - 3;
 
     // sigma calculation parameters [FIXME these should be user configurable]
     double sigHiGuess[Const::NPar]      = {1., -1., 1.};
@@ -153,14 +149,14 @@ class SDeltaPtCutStudy {
     vector<uint32_t> fColCut;
     vector<uint32_t> fMarCut;
 
-    // histogram parameters [FIXME these shoud be user configurable]
-    TString sSigSuffix[Const::NSigCuts] = {
-      "_sigDPt1",
-      "_sidDpt15",
-      "_sigDPt2",
-      "_sigDPt25",
-      "_sigDPt3"
-    };
+    // pt-dependent delta-pt cut parameters
+    size_t           nSigCuts   = 0;
+    size_t           iSigToDraw = 0;
+    vector<double>   ptDeltaSig;
+    vector<TString>  sSigSuffix;
+    vector<uint32_t> fColSig;
+    vector<uint32_t> fMarSig;
+    vector<uint32_t> fColSigFit;
 
     // histogram base names
     TString sPtProjBase   = "DeltaPtProj";
@@ -194,11 +190,6 @@ class SDeltaPtCutStudy {
     uint32_t fMarTrk    = 46;
     size_t   nEffRebin  = 5;
     bool     doEffRebin = true;
-
-    // graph/fit style parameters [FIXME these should be user configurable]
-    uint32_t fColSigFit[Const::NSigCuts] = {893, 903, 873, 883, 863};
-    uint32_t fColSig[Const::NSigCuts]    = {899, 909, 879, 889, 859};
-    uint32_t fMarSig[Const::NSigCuts]    = {24,  26,  32,  25,  27};
 
     // track tuple addresses
     float trk_event;
@@ -399,20 +390,18 @@ class SDeltaPtCutStudy {
     float tru_nclusmms;
 
     // for sigma calculation
-    vector<double> muProj;
-    vector<double> sigProj;
-    array<vector<double>, Const::NSigCuts> muHiProj;
-    array<vector<double>, Const::NSigCuts> muLoProj;
-
-    // for reject calculation
-    uint64_t nNormSig[Const::NSigCuts];
-    uint64_t nWeirdSig[Const::NSigCuts];
-    double   rejSig[Const::NSigCuts];
+    vector<double>         muProj;
+    vector<double>         sigProj;
+    vector<vector<double>> muHiProj;
+    vector<vector<double>> muLoProj;
 
     // for flat delta-pt cut rejection
     vector<uint64_t> nNormCut;
+    vector<uint64_t> nNormSig;
     vector<uint64_t> nWeirdCut;
+    vector<uint64_t> nWeirdSig;
     vector<double>   rejCut;
+    vector<double>   rejSig;
 
     // for tuple loops
     uint64_t nTrks;
@@ -425,19 +414,19 @@ class SDeltaPtCutStudy {
     TH1D* hPtTrack;
     TH1D* hPtFrac;
     TH1D* hPtTrkTru;
-    TH1D* hPtDeltaSig[Const::NSigCuts];
-    TH1D* hPtTrackSig[Const::NSigCuts];
-    TH1D* hPtFracSig[Const::NSigCuts];
-    TH1D* hPtTrkTruSig[Const::NSigCuts];
-    TH1D* hEffSig[Const::NSigCuts];
 
     // 1d projection & cut-dependent histograms
     vector<TH1D*> hPtDeltaProj;
     vector<TH1D*> hPtDeltaCut;
+    vector<TH1D*> hPtDeltaSig;
     vector<TH1D*> hPtTrackCut;
+    vector<TH1D*> hPtTrackSig;
     vector<TH1D*> hPtFracCut;
+    vector<TH1D*> hPtFracSig;
     vector<TH1D*> hPtTrkTruCut;
+    vector<TH1D*> hPtTrkTruSig;
     vector<TH1D*> hEffCut;
+    vector<TH1D*> hEffSig;
 
 
     // general 2d histograms
@@ -445,29 +434,31 @@ class SDeltaPtCutStudy {
     TH2D* hPtDeltaVsTrue;
     TH2D* hPtDeltaVsTrack;
     TH2D* hPtTrueVsTrack;
-    TH2D* hPtDeltaVsFracSig[Const::NSigCuts];
-    TH2D* hPtDeltaVsTrueSig[Const::NSigCuts];
-    TH2D* hPtDeltaVsTrackSig[Const::NSigCuts];
-    TH2D* hPtTrueVsTrackSig[Const::NSigCuts];
 
     // 2d cut-dependent histograms
     vector<TH2D*> hPtDeltaVsFracCut;
+    vector<TH2D*> hPtDeltaVsFracSig;
     vector<TH2D*> hPtDeltaVsTrueCut;
+    vector<TH2D*> hPtDeltaVsTrueSig;
     vector<TH2D*> hPtDeltaVsTrackCut;
+    vector<TH2D*> hPtDeltaVsTrackSig;
     vector<TH2D*> hPtTrueVsTrackCut;
+    vector<TH2D*> hPtTrueVsTrackSig;
 
     // functions
-    TF1* fMuHiProj[Const::NSigCuts];
-    TF1* fMuLoProj[Const::NSigCuts];
     vector<TF1*> fPtDeltaProj;
+    vector<TF1*> fMuHiProj;
+    vector<TF1*> fMuLoProj;
 
-    // graphs
+    // general graphs
     TGraph* grMuProj;
     TGraph* grSigProj;
     TGraph* grRejCut;
     TGraph* grRejSig;
-    TGraph* grMuHiProj[Const::NSigCuts];
-    TGraph* grMuLoProj[Const::NSigCuts];
+
+    // cut-dependent graphs
+    vector<TGraph*> grMuHiProj;
+    vector<TGraph*> grMuLoProj;
 
 };  // end SDeltaPtCutStudy definition
 

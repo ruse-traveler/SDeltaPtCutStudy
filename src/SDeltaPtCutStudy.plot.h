@@ -431,7 +431,7 @@ void SDeltaPtCutStudy::SetStyles() {
     hPtDeltaProj[iProj] -> GetYaxis() -> SetLabelSize(fLab[1]);
     hPtDeltaProj[iProj] -> GetYaxis() -> CenterTitle(fCnt);
   }
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     grMuHiProj[iSig]  -> SetMarkerColor(fColSig[iSig]);
     grMuHiProj[iSig]  -> SetMarkerStyle(fMarSig[iSig]);
     grMuHiProj[iSig]  -> SetFillColor(fColSig[iSig]);
@@ -733,7 +733,7 @@ void SDeltaPtCutStudy::SetStyles() {
   }
 
   // set styles of flat delta-pt cut histograms
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hEffSig[iSig]            -> SetMarkerColor(fColSig[iSig]);
     hEffSig[iSig]            -> SetMarkerStyle(fMarSig[iSig]);
     hEffSig[iSig]            -> SetFillColor(fColSig[iSig]);
@@ -1003,35 +1003,16 @@ void SDeltaPtCutStudy::MakePlots() {
   const TString sLegTrack("tracks (w/ cuts)");
   const TString sLegMu("Mean #Deltap_{T} / p_{T}^{reco} (n = 0)");
   const TString sLegProjBase("p_{T}^{reco} = ");
+  const TString sLegProjSigBase("n = ");
   const TString sLegCutBase("#Deltap_{T} / p_{T}^{reco} < ");
-  const TString sLegProjSig[Const::NSigCuts] = {
-    "n = 1",
-    "n = 1.5",
-    "n = 2",
-    "n = 2.5",
-    "n = 3"
-  };
-  const TString sLegDelta[Const::NSigCuts] = {
-    "1 #times #sigma(#Deltap_{T} / p_{T}^{reco})",
-    "1.5 #times #sigma(#Deltap_{T} / p_{T}^{reco})",
-    "2 #times #sigma(#Deltap_{T} / p_{T}^{reco})",
-    "2.5 #times #sigma(#Deltap_{T} / p_{T}^{reco})",
-    "3 #times #sigma(#Deltap_{T} / p_{T}^{reco})"
-  };
-  const TString sLegSig[Const::NSigCuts] = {
-    "#Deltap_{T} / p_{T}^{reco} #in 1 #times sigma(#Deltap_{T} / p_{T}^{reco})",
-    "#Deltap_{T} / p_{T}^{reco} #in 1.5 #times sigma(#Deltap_{T} / p_{T}^{reco})",
-    "#Deltap_{T} / p_{T}^{reco} #in 2 #times sigma(#Deltap_{T} / p_{T}^{reco})",
-    "#Deltap_{T} / p_{T}^{reco} #in 2.5 #times sigma(#Deltap_{T} / p_{T}^{reco})",
-    "#Deltap_{T} / p_{T}^{reco} #in 3 #times sigma(#Deltap_{T} / p_{T}^{reco})"
-  };
+  const TString sLegSigBase("#Deltap_{T} / p_{T}^{reco} #in ");
 
   // create projection legend text
   TString         sLegProjTxt;
   vector<TString> sLegProj; 
   for (const double proj : ptProj) {
     sLegProjTxt  = sLegProjBase;
-    sLegProjTxt += proj;
+    sLegProjTxt += (float) proj;
     sLegProjTxt += " GeV/c";
     sLegProj.push_back(sLegProjTxt);
   }
@@ -1041,8 +1022,35 @@ void SDeltaPtCutStudy::MakePlots() {
   vector<TString> sLegCut;
   for (const double cut : ptDeltaMax) {
     sLegCutTxt  = sLegCutBase;
-    sLegCutTxt += cut;
+    sLegCutTxt += (float) cut;
     sLegCut.push_back(sLegCutTxt);
+  }
+
+  // create pt-dependent delta-pt cut legend text
+  TString         sLegSigTxt;
+  TString         sLegDeltaTxt;
+  TString         sLegProjSigTxt;
+  vector<TString> sLegSig;
+  vector<TString> sLegDelta;
+  vector<TString> sLegProjSig;
+  for (const double sig : ptDeltaSig) {
+
+    // make sigma text
+    sLegSigTxt  = sLegSigBase;
+    sLegSigTxt += (float) sig;
+    sLegSigTxt += " #times sigma(#Deltap_{T} / p_{T}^{reco})";
+    sLegSig.push_back(sLegSigTxt);
+
+    // make sigma cut text
+    sLegDeltaTxt  = "";
+    sLegDeltaTxt += (float) sig;
+    sLegDeltaTxt += " #times #sigma(#Deltap_{T} / p_{T}^{reco})";
+    sLegDelta.push_back(sLegDeltaTxt);
+
+    // make sigma projection text
+    sLegProjSigTxt  = sLegProjSigBase;
+    sLegProjSigTxt += (float) sig;
+    sLegProjSig.push_back(sLegProjSigTxt);
   }
 
   // cut legend parameters
@@ -1057,7 +1065,7 @@ void SDeltaPtCutStudy::MakePlots() {
   sTrkCuts[3]  = "N_{hit}^{tpc} > ";
   sTrkCuts[3] += nTpcTrkMin;
   sTrkCuts[4]  = "p_{T}^{reco} > ";
-  sTrkCuts[4] += ptTrkMin;
+  sTrkCuts[4] += (float) ptTrkMin;
   sTrkCuts[4] += " GeV/c";
   sTrkCuts[5]  = "quality < ";
   sTrkCuts[5] += qualTrkMax;
@@ -1067,10 +1075,10 @@ void SDeltaPtCutStudy::MakePlots() {
   const uint32_t fFilLe                 = 0;
   const uint32_t fLinLe                 = 0;
   const float    yObjLe                 = 0.1 + ((nDPtCuts + 2) * 0.05);
-  const float    yObjMu                 = 0.1 + ((Const::NSigCuts + 1) * 0.05);
-  const float    yObjDel                = 0.1 + (Const::NSigCuts * 0.05);
+  const float    yObjMu                 = 0.1 + ((nSigCuts + 1) * 0.05);
+  const float    yObjDel                = 0.1 + (nSigCuts * 0.05);
   const float    yObjPro                = 0.1 + (nProj * 0.05);
-  const float    yObjSig                = 0.1 + ((Const::NSigCuts + 2) * 0.05);
+  const float    yObjSig                = 0.1 + ((nSigCuts + 2) * 0.05);
   const float    fLegXY[Const::NVtx]    = {0.1, 0.1, 0.3, yObjLe};
   const float    fLegMuXY[Const::NVtx]  = {0.1, 0.1, 0.3, yObjMu};
   const float    fLegDelXY[Const::NVtx] = {0.1, 0.1, 0.3, yObjDel};
@@ -1098,7 +1106,7 @@ void SDeltaPtCutStudy::MakePlots() {
   legMu -> SetTextFont(fTxt);
   legMu -> SetTextAlign(fAln);
   legMu -> AddEntry(grMuProj, sLegMu.Data(), "p");
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     legMu -> AddEntry(grMuHiProj[iSig], sLegProjSig[iSig].Data(), "p");
   }
 
@@ -1109,7 +1117,7 @@ void SDeltaPtCutStudy::MakePlots() {
   legDel -> SetLineStyle(fLinLe);
   legDel -> SetTextFont(fTxt);
   legDel -> SetTextAlign(fAln);
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     legDel -> AddEntry(fMuHiProj[iSig], sLegDelta[iSig].Data(), "l");
   }
 
@@ -1133,19 +1141,19 @@ void SDeltaPtCutStudy::MakePlots() {
   legSig -> SetTextAlign(fAln);
   legSig -> AddEntry(hPtTruth,  sLegTrue.Data(),  "pf");
   legSig -> AddEntry(hPtTrkTru, sLegTrack.Data(), "pf");
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     legSig -> AddEntry(hPtTrkTruSig[iSig], sLegSig[iSig].Data(), "pf");
   }
   cout << "      Made legends." << endl;
 
   // make text boxes
-  const UInt_t  fColInf                 = 0;
-  const UInt_t  fFilInf                 = 0;
-  const UInt_t  fLinInf                 = 0;
-  const Float_t yObjInf                 = 0.1 + (nTxt * 0.05);
-  const Float_t yObjCut                 = 0.1 + (Const::NTrkCuts * 0.05);
-  const Float_t fInfXY[Const::NVtx] = {0.3, 0.1, 0.5, yObjInf};
-  const Float_t fCutXY[Const::NVtx] = {0.5, 0.1, 0.7, yObjCut};
+  const uint32_t  fColInf             = 0;
+  const uint32_t  fFilInf             = 0;
+  const uint32_t  fLinInf             = 0;
+  const float     yObjInf             = 0.1 + (nTxt * 0.05);
+  const float     yObjCut             = 0.1 + (Const::NTrkCuts * 0.05);
+  const float     fInfXY[Const::NVtx] = {0.3, 0.1, 0.5, yObjInf};
+  const float     fCutXY[Const::NVtx] = {0.5, 0.1, 0.7, yObjCut};
 
   TPaveText *info = new TPaveText(fInfXY[0], fInfXY[1], fInfXY[2], fInfXY[3], "NDC NB");
   info -> SetFillColor(fColInf);
@@ -1165,16 +1173,16 @@ void SDeltaPtCutStudy::MakePlots() {
   cuts -> SetLineStyle(fLinInf);
   cuts -> SetTextFont(fTxt);
   cuts -> SetTextAlign(fAln);
-  for (Ssiz_t iTrkCut = 0; iTrkCut < Const::NTrkCuts; iTrkCut++) {
+  for (uint16_t iTrkCut = 0; iTrkCut < Const::NTrkCuts; iTrkCut++) {
     cuts -> AddText(sTrkCuts[iTrkCut].Data());
   }
   cout << "      Made text." << endl;
 
   // make line
-  const UInt_t  fColLi                  = 1;
-  const UInt_t  fLinLi                  = 9;
-  const UInt_t  fWidLi                  = 1;
-  const Float_t fLinXY[Const::NVtx] = {rPtRange[0], 1., rPtRange[1], 1.};
+  const uint32_t fColLi              = 1;
+  const uint32_t fLinLi              = 9;
+  const uint32_t fWidLi              = 1;
+  const float    fLinXY[Const::NVtx] = {rPtRange[0], 1., rPtRange[1], 1.};
 
   TLine *line = new TLine(fLinXY[0], fLinXY[1], fLinXY[2], fLinXY[3]);
   line -> SetLineColor(fColLi);
@@ -1183,34 +1191,34 @@ void SDeltaPtCutStudy::MakePlots() {
   cout << "      Made line." << endl;
 
   // make plots
-  const UInt_t  width(750);
-  const UInt_t  width2D(1500);
-  const UInt_t  height(950);
-  const UInt_t  heightNR(750);
-  const UInt_t  fMode(0);
-  const UInt_t  fBord(2);
-  const UInt_t  fGrid(0);
-  const UInt_t  fTick(1);
-  const UInt_t  fLogX(0);
-  const UInt_t  fLogY1(1);
-  const UInt_t  fLogY2(1);
-  const UInt_t  fLogYNR(0);
-  const UInt_t  fFrame(0);
-  const Float_t fMarginL(0.15);
-  const Float_t fMarginR(0.02);
-  const Float_t fMarginR2D(0.15);
-  const Float_t fMarginT1(0.005);
-  const Float_t fMarginT2(0.02);
-  const Float_t fMarginTNR(0.02);
-  const Float_t fMarginB1(0.25);
-  const Float_t fMarginB2(0.005);
-  const Float_t fMarginBNR(0.15);
-  const Float_t fEffXY[Const::NVtx]       = {0.,  0.,   1.,  0.35};
-  const Float_t fTrksXY[Const::NVtx]      = {0.,  0.35, 1.,  1.};
-  const Float_t fTwoDimXY[Const::NVtx]    = {0.,  0.,   0.5, 1.};
-  const Float_t fProjectXY[Const::NVtx]   = {0.5, 0.,   1.,  1.};
-  const Float_t fBeforeDPtXY[Const::NVtx] = {0.,  0.,   0.5, 1.};
-  const Float_t fAfterDPtXY[Const::NVtx]  = {0.5, 0.,   1.,  1.};
+  const uint32_t width(750);
+  const uint32_t width2D(1500);
+  const uint32_t height(950);
+  const uint32_t heightNR(750);
+  const uint32_t fMode(0);
+  const uint32_t fBord(2);
+  const uint32_t fGrid(0);
+  const uint32_t fTick(1);
+  const uint32_t fLogX(0);
+  const uint32_t fLogY1(1);
+  const uint32_t fLogY2(1);
+  const uint32_t fLogYNR(0);
+  const uint32_t fFrame(0);
+  const float    fMarginL(0.15);
+  const float    fMarginR(0.02);
+  const float    fMarginR2D(0.15);
+  const float    fMarginT1(0.005);
+  const float    fMarginT2(0.02);
+  const float    fMarginTNR(0.02);
+  const float    fMarginB1(0.25);
+  const float    fMarginB2(0.005);
+  const float    fMarginBNR(0.15);
+  const float    fEffXY[Const::NVtx]       = {0.,  0.,   1.,  0.35};
+  const float    fTrksXY[Const::NVtx]      = {0.,  0.35, 1.,  1.};
+  const float    fTwoDimXY[Const::NVtx]    = {0.,  0.,   0.5, 1.};
+  const float    fProjectXY[Const::NVtx]   = {0.5, 0.,   1.,  1.};
+  const float    fBeforeDPtXY[Const::NVtx] = {0.,  0.,   0.5, 1.};
+  const float    fAfterDPtXY[Const::NVtx]  = {0.5, 0.,   1.,  1.};
 
   TCanvas *cEffCut = new TCanvas("cEfficiency_FlatCut", "", width, height);
   TPad    *pEffCut = new TPad("pEffCut", "", fEffXY[0],  fEffXY[1],  fEffXY[2],  fEffXY[3]);
@@ -1297,14 +1305,14 @@ void SDeltaPtCutStudy::MakePlots() {
   pTrkSig -> Draw();
   pEffSig -> cd();
   hEff    -> Draw();
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hEffSig[iSig] -> Draw("SAME");
   }
   line      -> Draw();
   pTrkSig   -> cd();
   hPtTruth  -> Draw();
   hPtTrkTru -> Draw("SAME");
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hPtTrkTruSig[iSig] -> Draw("SAME");
   }
   legSig  -> Draw();
@@ -1471,7 +1479,7 @@ void SDeltaPtCutStudy::MakePlots() {
   pProject        -> Draw();
   pTwoDim         -> cd();
   hPtDeltaVsTrack -> Draw("colz");
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     fMuHiProj[iSig] -> Draw("same");
     fMuLoProj[iSig] -> Draw("same");
   }
@@ -1524,7 +1532,7 @@ void SDeltaPtCutStudy::MakePlots() {
   cMuProj  -> SetLogy(fLogYNR);
   cMuProj  -> cd();
   grMuProj -> Draw("ALP");
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     grMuHiProj[iSig] -> Draw("LP");
     grMuLoProj[iSig] -> Draw("LP");
   }

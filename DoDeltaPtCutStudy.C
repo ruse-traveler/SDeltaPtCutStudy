@@ -71,8 +71,24 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
     make_tuple(0.10, "_dPt10", 879, 32, false),
     make_tuple(0.05, "_dPt05", 889, 25, false),
     make_tuple(0.03, "_dPt03", 859, 27, true),
-    make_tuple(0.02, "_dPt02", 869, 28, true),
-    make_tuple(0.01, "_dPt01", 839, 30, true)
+    make_tuple(0.02, "_dPt02", 869, 28, false),
+    make_tuple(0.01, "_dPt01", 839, 30, false)
+  };
+
+  // pt-dependent delta-pt cut parameters
+  //   <0> = max n-sigma away from mean
+  //   <1> = histogram suffix
+  //   <2> = histogram color
+  //   <3> = histogram marker
+  //   <4> = fit color
+  //   <5> = draw this one?
+  //         (only 1st cut set to true will be drawn)
+  const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t, bool>> ptDependParams = {
+    make_tuple(1.0, "_sigDPt10", 899, 24, 893, false),
+    make_tuple(1.5, "_sigDPt15", 909, 26, 903, false),
+    make_tuple(2.0, "_sigDPt20", 879, 32, 873, true),
+    make_tuple(2.5, "_sigDPt25", 889, 25, 883, false),
+    make_tuple(3.0, "_sigDPt30", 859, 27, 863, false) 
   };
 
   // general track cuts
@@ -130,6 +146,7 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   study -> SetEffRebinParameters(doEffRebin, nEffRebin);
   study -> SetProjectionParameters(projParams);
   study -> SetFlatCutParameters(flatParams);
+  study -> SetPtDependCutParameters(ptDependParams);
   study -> Init();
   study -> Analyze();
   study -> End();

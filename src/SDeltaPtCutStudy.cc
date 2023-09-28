@@ -26,13 +26,6 @@ using namespace std;
 
 SDeltaPtCutStudy::SDeltaPtCutStudy() {
 
-  // initialize arrays for rejection calculation
-  // [FIXME this will need to go where  NSigCuts will be set]
-  for (Ssiz_t iSig = 0; iSig < NSigCuts; iSig++) {
-    nNormSig[iSig]  = 0;
-    nWeirdSig[iSig] = 0;
-    rejSig[iSig]    = 0.;
-  }
   cout << "\n  Beginning delta-pt cut study..."  << endl;
 
 }  // end ctor

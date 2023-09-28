@@ -223,6 +223,36 @@ void SDeltaPtCutStudy::SetFlatCutParameters(const vector<tuple<double, TString, 
 
 
 
+void SDeltaPtCutStudy::SetPtDependCutParameters(const vector<tuple<double, TString, uint32_t, uint32_t, uint32_t, bool>> ptDependParams) {
+
+  bool   cutSelected = false;
+  size_t iParam      = 0;
+  for (auto param : ptDependParams) {
+
+    // read in parameters
+    ptDeltaSig.push_back(get<0>(param));
+    sSigSuffix.push_back(get<1>(param));
+    fColSig.push_back(get<2>(param));
+    fMarSig.push_back(get<3>(param));
+    fColSigFit.push_back(get<4>(param));
+
+    // determine which cut to draw
+    if (!cutSelected && get<5>(param)) {
+      iCutToDraw  = iParam;
+      cutSelected = true;
+    }
+    ++iParam;
+  }
+  cout << "CHECK: iSigCutToDraw = " << iCutToDraw << endl;
+  nSigCuts = ptDependParams.size();
+
+  cout << "    Set pt-dependent delta-pt cut parameters." << endl; 
+  return;
+
+}  // end 'SetFlatCutParameters(vector<tuple<double, TString, uint32_t, uint32_t, uint32_t, bool>>)'
+
+
+
 // private io methods ---------------------------------------------------------
 
 void SDeltaPtCutStudy::OpenFiles() {
@@ -304,7 +334,7 @@ void SDeltaPtCutStudy::SaveOutput() {
   // save pt-dependent delta-pt cut histograms
   dSigmaCut -> cd();
   grRejSig  -> Write();
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     hEffSig[iSig]            -> Write();
     hPtDeltaSig[iSig]        -> Write();
     hPtTrackSig[iSig]        -> Write();
@@ -324,7 +354,7 @@ void SDeltaPtCutStudy::SaveOutput() {
     hPtDeltaProj[iProj] -> Write();
     fPtDeltaProj[iProj] -> Write();
   }
-  for (Ssiz_t iSig = 0; iSig < Const::NSigCuts; iSig++) {
+  for (size_t iSig = 0; iSig < nSigCuts; iSig++) {
     fMuHiProj[iSig]  -> Write();
     fMuLoProj[iSig]  -> Write();
     grMuHiProj[iSig] -> Write();
