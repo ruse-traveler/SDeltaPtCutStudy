@@ -26,7 +26,8 @@ R__LOAD_LIBRARY(/sphenix/user/danderson/install/lib/libsdeltaptcutstudy.so)
 
 // global constants
 static const bool   DefBatch = false;
-static const size_t NTypes  = 3;
+static const size_t NPar     = 3;
+static const size_t NTypes   = 3;
 
 
 
@@ -91,6 +92,13 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
     make_tuple(3.0, "_sigDPt30", 859, 27, 863, false) 
   };
 
+  // fit guesses, and norm and fit ranges
+  array<float, NPar> sigHiGuess    = {1., -1., 1.};
+  array<float, NPar> sigLoGuess    = {1., -1., 1.};
+  pair<float, float> normRange     = {0.2, 1.2};
+  pair<float, float> ptFitRange    = {0.5, 40.};
+  pair<float, float> deltaFitRange = {0.,  0.1};
+
   // general track cuts
   const uint32_t nInttTrkMin = 1;
   const uint32_t nMVtxTrkMin = 2;
@@ -138,6 +146,8 @@ void DoDeltaPtCutStudy(const bool inBatchMode = DefBatch) {
   study -> SetInputOutputFiles(sInFile, sOutFile);
   study -> SetInputTuples(sInTrack, sInTruth);
   study -> SetGeneralTrackCuts(nInttTrkMin, nMVtxTrkMin, nTpcTrkMin, qualTrkMax, vzTrkMax, ptTrkMin);
+  study -> SetSigmaFitGuesses(sigHiGuess, sigLoGuess);
+  study -> SetNormAndFitRanges(normRange, ptFitRange, deltaFitRange);
   study -> SetPlotRanges(rPtRange, rFracRange, rDeltaRange);
   study -> SetGeneralStyleParameters(arrColGraph, arrMarGraph);
   study -> SetGeneralHistParameters(fFil, fLin, fWid, fTxt, fAln, fCnt);

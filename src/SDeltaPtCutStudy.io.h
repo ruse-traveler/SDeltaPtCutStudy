@@ -67,6 +67,41 @@ void SDeltaPtCutStudy::SetGeneralTrackCuts(const uint32_t nInttCut, const uint32
 
 
 
+void SDeltaPtCutStudy::SetSigmaFitGuesses(const array<float, Const::NPar> hiGuess, const array<float, Const::NPar> loGuess) {
+
+  for (uint8_t iPar = 0; iPar < Const::NPar; iPar++) {
+    sigHiGuess[iPar] = hiGuess[iPar];
+    sigLoGuess[iPar] = loGuess[iPar];
+  }
+  cout << "    Set sigma(delta-pt / pt) fit guesses:\n"
+       << "      high guess parameters = (" << sigHiGuess[0] << ", " << sigHiGuess[1] << ", " << sigHiGuess[2] << ")\n"
+       << "      low guess parameters  = (" << sigLoGuess[0] << ", " << sigLoGuess[1] << ", " << sigLoGuess[2] << ")"
+      << endl;
+  return;
+
+}  // end 'SetSigmaFitGuesses(array<float>, array<float>)'
+
+
+
+void SDeltaPtCutStudy::SetNormAndFitRanges(const pair<float, float> norm, const pair<float, float> ptFit, const pair<float, float> deltaFit) {
+
+    normRange[0]     = norm.first;
+    normRange[1]     = norm.second;
+    ptFitRange[0]    = ptFit.first;
+    ptFitRange[1]    = ptFit.second;
+    deltaFitRange[0] = deltaFit.first;
+    deltaFitRange[1] = deltaFit.second;
+    cout << "    Set normalization and fit ranges:\n"
+         << "      normalization = (" << normRange[0]     << ", " << normRange[1]     << ")\n"
+         << "      pt fit        = (" << ptFitRange[0]    << ", " << ptFitRange[1]    << ")\n"
+         << "      delta-pt fit  = (" << deltaFitRange[0] << ", " << deltaFitRange[1] << ")"
+         << endl;
+    return;
+
+}  // end 'SetNormAndFitRange(pair<float, float>, pair<float, float>, pair<float, float>)'
+
+
+
 void SDeltaPtCutStudy::SetPlotRanges(const pair<float, float> ptRange, const pair<float, float> fracRange, const pair<float, float> deltaRange) {
 
   rPtRange[0]    = ptRange.first;
@@ -162,6 +197,7 @@ void SDeltaPtCutStudy::SetPlotText(const vector<TString> plotText) {
 }  // end 'SetPlotText(vector<TString>)'
 
 
+
 void SDeltaPtCutStudy::SetEffRebinParameters(const bool doRebin, const size_t nRebin) {
 
   doEffRebin = doRebin;
@@ -213,7 +249,6 @@ void SDeltaPtCutStudy::SetFlatCutParameters(const vector<tuple<double, TString, 
     }
     ++iParam;
   }
-  cout << "CHECK: iCutToDraw = " << iCutToDraw << endl;
   nDPtCuts = flatParams.size();
 
   cout << "    Set flat delta-pt cut parameters." << endl; 
@@ -243,7 +278,6 @@ void SDeltaPtCutStudy::SetPtDependCutParameters(const vector<tuple<double, TStri
     }
     ++iParam;
   }
-  cout << "CHECK: iSigCutToDraw = " << iCutToDraw << endl;
   nSigCuts = ptDependParams.size();
 
   cout << "    Set pt-dependent delta-pt cut parameters." << endl; 

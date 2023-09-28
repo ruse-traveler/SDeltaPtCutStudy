@@ -70,6 +70,8 @@ class SDeltaPtCutStudy {
     void SetInputOutputFiles(const TString sInput, const TString sOutput);
     void SetInputTuples(const TString sTrack, const TString sTruth);
     void SetGeneralTrackCuts(const uint32_t nInttCut, const uint32_t nMvtxCut, const uint32_t nTpcCut, const double qualCut, const double vzCut, const double ptCut);
+    void SetSigmaFitGuesses(const array<float, Const::NPar> hiGuess, const array<float, Const::NPar> loGuess);
+    void SetNormAndFitRanges(const pair<float, float> norm, const pair<float, float> ptFit, const pair<float, float> deltaFit); 
     void SetPlotRanges(const pair<float, float> ptRange, const pair<float, float> fracRange, const pair<float, float> deltaRange);
     void SetGeneralStyleParameters(const array<uint32_t, Const::NTypes> arrCol, const array<uint32_t, Const::NTypes> arrMar);
     void SetGeneralHistParameters(const uint32_t fill, const uint32_t line, const uint32_t width, const uint32_t font, const uint32_t align, const uint32_t center);
@@ -123,14 +125,12 @@ class SDeltaPtCutStudy {
     double   vzTrkMax    = 10.;
     double   ptTrkMin    = 0.1;
 
-    // delta-pt/pt cut parameters
-    double normRange[Const::NRange]    = {0.2, 1.2};
-
-    // sigma calculation parameters [FIXME these should be user configurable]
-    double sigHiGuess[Const::NPar]      = {1., -1., 1.};
-    double sigLoGuess[Const::NPar]      = {1., -1., 1.};
-    double deltaFitRange[Const::NRange] = {0.,  0.1};
-    double ptFitRange[Const::NRange]    = {0.5, 40.};
+    // sigma calculation parameters
+    array<float, Const::NPar>   sigHiGuess    = {1., -1., 1.};
+    array<float, Const::NPar>   sigLoGuess    = {1., -1., 1.};
+    array<float, Const::NRange> normRange     = {0.2, 1.2};
+    array<float, Const::NRange> ptFitRange    = {0.5, 40.};
+    array<float, Const::NRange> deltaFitRange = {0.,  0.1};
 
     // projection parameters
     size_t           nProj = 0;
@@ -171,9 +171,9 @@ class SDeltaPtCutStudy {
     vector<TString> sInfo;
 
     // plot range parameters
-    float rPtRange[Const::NRange]    = {0., 60.};
-    float rFracRange[Const::NRange]  = {0., 4.};
-    float rDeltaRange[Const::NRange] = {0., 0.1};
+    array<float, Const::NRange> rPtRange    = {0., 60.};
+    array<float, Const::NRange> rFracRange  = {0., 4.};
+    array<float, Const::NRange> rDeltaRange = {0., 0.1};
 
     // general histogram style parameters
     uint32_t fFil       = 0;
