@@ -14,7 +14,7 @@ declare -a files_to_copy
 
 # top directory to copy from/to
 copy_from="/sphenix/user/danderson/tracking/DeltaPtCutStudy"
-copy_to="/sphenix/user/danderson/analysis/AndersonAnalysisModules/SDeltaPtCutStudy"
+copy_to="/sphenix/user/danderson/analysis/AndersonAnalysisModules/TrackStudies/DeltaPtCutStudy"
 
 # what files to copy
 files_to_copy[0]="README.md"
@@ -32,6 +32,7 @@ files_to_copy[11]="src/autogen.sh"
 files_to_copy[12]="src/configure.ac"
 files_to_copy[13]="src/Makefile.am"
 files_to_copy[14]="src/sphx-build"
+files_to_copy[15]="macros/CheckDeltaPtWithBoundaryMasks.cxx"
 
 # do copying
 # TODO: automate detection/creation of sub-directories
