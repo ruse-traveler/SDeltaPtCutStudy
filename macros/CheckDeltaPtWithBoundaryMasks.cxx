@@ -28,9 +28,13 @@
 using namespace std;
 using namespace ROOT;
 
-// set up aliases
+// set up RDF aliases
 using TH1Mod = ROOT::RDF::TH1DModel;
 using TH2Mod = ROOT::RDF::TH2DModel;
+using RH1Ptr = ROOT::RDF::RResultPtr<::TH1D>;
+using RH2Ptr = ROOT::RDF::RResultPtr<::TH2D>;
+
+// set up tuple aliases
 using THBins = tuple<size_t, double, double>;
 using TH1Def = tuple<string, string, THBins>;
 using TH2Def = tuple<string, string, THBins, THBins>;
@@ -52,7 +56,6 @@ void CheckDeltaPtWithBoundaryMasks() {
   // options ------------------------------------------------------------------
 
   // i/o parameters
-ldOutput
   const string sOutput  = "test.root";
   const string sInput   = "../TruthMatching/input/merged/sPhenixG4_oneMatchPerParticle_oldEvaluator.pt020num5evt500pim.d19m10y2023.root";
   const string sInTuple = "ntp_track";
@@ -82,7 +85,7 @@ ldOutput
   // histogram definitions ----------------------------------------------------
 
   // binning accessor
-  enum class Var {Ene, Phi, DPt, Frac};
+  enum Var {VEne, VPhi, VDPt, VFrac};
 
   // other variable binning
   //   <0> = no. of bins
@@ -96,8 +99,8 @@ ldOutput
   };
 
   // histogram accessors
-  enum class Cut  {Before, Left, Cut};
-  enum class Hist {PtReco, PtTrue, PtFrac, Phi, DPt, DPtVsPhi};
+  enum Cut  {Before, Left, Cut};
+  enum Hist {HPtReco, HPtTrue, HPtFrac, HPhi, HDPt, HDPtVsPhi};
 
   // before vs. after labels
   const vector<string> vecCutLabels = {
@@ -133,23 +136,23 @@ ldOutput
   //     <1> = axis titles
   //     <2> = x-axis binning
   const vector<pair<Leaves, TH1Def>> vecHistDef1D = {
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::PtReco)], make_tuple("hPtReco",  vecTitles[static_cast<uint8_t>(Hist::PtReco)].data(), vecBins[static_cast<uint8_t>(Var::Ene)])),
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::PtTrue)], make_tuple("hPtTrue",  vecTitles[static_cast<uint8_t>(Hist::PtTrue)].data(), vecBins[static_cast<uint8_t>(Var::Ene)])),
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::PtFrac)], make_tuple("hPtFrac",  vecTitles[static_cast<uint8_t>(Hist::PtFrac)].data(), vecBins[static_cast<uint8_t>(Var::Frac)])),
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::Phi)], make_tuple("hPhi",     vecTitles[static_cast<uint8_t>(Hist::Phi)].data(),    vecBins[static_cast<uint8_t>(Var::Phi)])),
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::DPt)], make_tuple("hDeltaPt", vecTitles[static_cast<uint8_t>(Hist::DPt)].data(),    vecBins[static_cast<uint8_t>(Var::DPt)]))
+    make_pair(vecLeaves[Hist::HPtReco], make_tuple("hPtReco",  vecAxisTitles[Hist::HPtReco].data(), vecBins[Var::VEne])),
+    make_pair(vecLeaves[Hist::HPtTrue], make_tuple("hPtTrue",  vecAxisTitles[Hist::HPtTrue].data(), vecBins[Var::VEne])),
+    make_pair(vecLeaves[Hist::HPtFrac], make_tuple("hPtFrac",  vecAxisTitles[Hist::HPtFrac].data(), vecBins[Var::VFrac])),
+    make_pair(vecLeaves[Hist::HPhi],    make_tuple("hPhi",     vecAxisTitles[Hist::HPhi].data(),    vecBins[Var::VPhi])),
+    make_pair(vecLeaves[Hist::HDPt],    make_tuple("hDeltaPt", vecAxisTitles[Hist::HDPt].data(),    vecBins[Var::VDPt]))
   };
 
   // 2d histogram definitions
-  //   first = leaves to draw
+  //   first  = leaves to draw
   //   second = hist definition
   //     <0> = histogram name
   //     <1> = axis titles
   //     <2> = x-axis binning
   //     <3> = y-axis binning
   const vector<pair<Leaves, TH2Def>> vecHistDef2D = {
-    make_pair(vecLeaves[static_cast<uint8_t>(Hist::DPtVsPhi)], make_tuple("hDPtVsPhi", vecTitles[static_cast<uint8_t>(Hist::DPtVsPhi)].data(), vecBins[static_cast<uint8_t>(Var::Phi)], vecBins[static_cast<uint8_t>(Var::DPt)]))
-  }
+    make_pair(vecLeaves[Hist::HDPtVsPhi], make_tuple("hDPtVsPhi", vecAxisTitles[Hist::HDPtVsPhi].data(), vecBins[Var::VPhi], vecBins[Var::VDPt]))
+  };
   cout << "    Defined histograms." << endl;
 
   // create histograms
@@ -159,7 +162,7 @@ ldOutput
   vector<pair<Leaves, TH1Mod>>         vecArgAndHistRow1D;
   vector<pair<Leaves, TH2Mod>>         vecArgAndHistRow2D;
   vector<vector<pair<Leaves, TH1Mod>>> vecArgAndHist1D(nCuts);
-  vector<vector<pair<Leaves, TH2Mod>>> vecArgAndHist2D(nCust);
+  vector<vector<pair<Leaves, TH2Mod>>> vecArgAndHist2D(nCuts);
 
   // instantiate histograms & load into vectors
   for (const string cut : vecCutLabels) {
@@ -174,7 +177,7 @@ ldOutput
 
       // instantiate hist
       THBins bins = get<2>(histDef1D.second);
-      TH1Mod hist = TH1Mod(name, get<1>(histDef1D.second), get<0>(bins), get<1>(bins), get <2>(bins));
+      TH1Mod hist = TH1Mod(name.data(), get<1>(histDef1D.second).data(), get<0>(bins), get<1>(bins), get <2>(bins));
       vecArgAndHistRow1D.push_back(make_pair(histDef1D.first, hist));
     }
     vecArgAndHist1D.push_back(vecArgAndHistRow1D);
@@ -190,10 +193,10 @@ ldOutput
       // instantiate hist
       THBins xBins = get<2>(histDef2D.second);
       THBins yBins = get<3>(histDef2D.second);
-      TH2Mod hist  = TH2Mod(name, get<1>(histDef2D.second), get<0>(xBins), get<1>(xBins), get <2>(xBins), get<0>(yBins), get<1>(yBins), get<2>(yBins));
+      TH2Mod hist  = TH2Mod(name.data(), get<1>(histDef2D.second).data(), get<0>(xBins), get<1>(xBins), get <2>(xBins), get<0>(yBins), get<1>(yBins), get<2>(yBins));
       vecArgAndHistRow2D.push_back(make_pair(histDef2D.first, hist));
     }
-    vecArgAndHist2D.push_back(vecArgAndHistRow1D);
+    vecArgAndHist2D.push_back(vecArgAndHistRow2D);
   }  // end cut loop
   cout << "    Created histograms." << endl;
 
@@ -220,21 +223,16 @@ ldOutput
   }
   cout << "    Set up data frame." << endl;
 
-  // helper lambdas -----------------------------------------------------------
+  // analysis lambdas ---------------------------------------------------------
 
   auto getFrac = [](const float a, const float b) { 
     return a / b;
   };  // end 'getFrac(float, float)'
 
-  // for masking sector boundaries
-  array<float, NSectors> arrSectors;
-  arrSectors.fill(0.);
-
-  auto isInMask = [](const float phi) {
-    bool  inMask   = false;
-    float halfMask = maskSize / 2.;
-    for (const float sector : arrSectors) {
-      if ((phi > (sector - halfMask)) && (phi < (sector + halfMask))) {
+  auto isInMask = [](const float phi, const double mask, const auto& sectors) {
+    bool inMask = false;
+    for (const float sector : sectors) {
+      if ((phi > (sector - (mask / 2.))) && (phi < (sector + (mask / 2.)))) {
         inMask = true;
         break;
       }
@@ -246,11 +244,39 @@ ldOutput
 
   // get histograms before masking
   auto before = frame.Define("ptFrac", getFrac, {"pt", "gpt"})
-                     .Define("ptErr",  getFrac, {"deltapt", "pt"};
+                     .Define("ptErr",  getFrac, {"deltapt", "pt"});
 
   // get initial 1d histograms
-  vector<vector<TH1D*>> vecOutHist1D;
-  vector<vector<TH2D*>> vecOutHist2D;
+  vector<vector<RH1Ptr>> vecHistResult1D(nCuts);
+  vector<vector<RH2Ptr>> vecHistResult2D(nCuts);
+  for (const auto argAndHistBefore1D : vecArgAndHist1D[Cut::Before]) {
+    auto hist1D = before.Histo1D(argAndHistBefore1D.second, argAndHistBefore1D.first.first.data());
+    vecHistResult1D[Cut::Before].push_back(hist1D);
+  }
+  for (const auto argAndHistBefore2D : vecArgAndHist2D[Cut::Before]) {
+    auto hist2D = before.Histo2D(argAndHistBefore2D.second, argAndHistBefore2D.first.first.data(), argAndHistBefore2D.first.second.data());
+    vecHistResult2D[Cut::Before].push_back(hist2D);
+  }
+
+  // retrieve results
+  vector<vector<TH1D*>> vecOutHist1D(nCuts);
+  vector<vector<TH2D*>> vecOutHist2D(nCuts);
+  for (auto histResultBefore1D : vecHistResult1D[Cut::Before]) {
+    TH1D* hist1D = (TH1D*) histResultBefore1D -> Clone();
+    vecOutHist1D[Cut::Before].push_back(hist1D);
+  }
+  for (auto histResultBefore2D : vecHistResult2D[Cut::Before]) {
+    TH2D* hist2D = (TH2D*) histResultBefore2D -> Clone();
+    vecOutHist2D[Cut::Before].push_back(hist2D);
+  }
+
+  /* TODO
+   *   - get sector bourndaries with fits
+   */
+
+  // for masking sector boundaries
+  array<float, NSectors> arrSectors;
+  arrSectors.fill(0.);
   
   // save & close -------------------------------------------------------------
 
@@ -271,7 +297,7 @@ ldOutput
   // close files
   fOutput -> cd();
   fOutput -> Close();
-  cout << "  Finished sector boundary-masking check!" << endl;
+  cout << "  Finished sector boundary-masking check!\n" << endl;
 
 }
 
